@@ -1,0 +1,8 @@
+scrapy-scraper
+Scrapy
+twisted[tls, conch]
+playwright
+scrapy-playwright
+browsermob-proxy
+webdriver-manager
+fake-useragent
