@@ -170,6 +170,13 @@ cython_debug/
 /lenskart-scraped-data
 /amazon-scrape-data
 /aztecca-scraped-data
-/flipkart-scrape-data/www.flipkart.com
-/results.txt
+/flipkart-scrape-data
+/results.*
 /urls.txt
+/timesofindia-scrape-data
+/wiki-scrape-data
+/trustpilot-scrape-data
+/trust-scrape
+/test-results
+/scraping_benchmark.xlsx
+/storage

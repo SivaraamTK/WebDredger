@@ -2,7 +2,21 @@ scrapy-scraper
 Scrapy
 twisted[tls, conch]
 playwright
+scrapylib
 scrapy-playwright
-browsermob-proxy
-webdriver-manager
-fake-useragent
+scrapy-deltafetch
+psutil
+pillow
+tldextract
+jinja2
+memory-profiler
+pyppeteer
+crawlee
+mechanicalsoup
+pyquery
+requests
+beautifulsoup4
+selenium
+webdriver_manager
+pandas
+xlsxwriter

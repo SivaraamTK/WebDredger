@@ -1,37 +1,132 @@
 # WebDredger
-Python Application to collect required data from a URL
+This is Python Scrapy Application to collect all data in an URL. This app can use Request or Playwright to get data from URL. Also includes Rotating Proxy integration
 
-## Installation
+> ### **Note**:
+>- This project is still under development and may have some bugs
+>- The Playwright mode does not work on windows as of now, instead use the Request mode or WSL to run the application    
+
+## Setup
+### Basic Setup
+To setup the project, follow the steps mentioned below:
+
 1. Clone the repository
-2. Install Java v8 from [here](https://www.oracle.com/in/java/technologies/downloads/#java8)
-3. Before installing Scrapy follow the steps mentioned for your respective OS [here](https://docs.scrapy.org/en/latest/intro/install.html#windows)
-4. Install the required packages using the following command:
+2. Before installing Scrapy follow the steps mentioned for your respective OS [here](https://docs.scrapy.org/en/latest/intro/install.html#windows)
+3. Install the required packages using the following command:
 ```bash
 pip install -r requirements.txt
 ```
-5. Install playwright using the following command:
+
+### Playwright Setup
+After completing the basic setup, follow the steps mentioned below to setup Playwright:
+
+1. (Optional) Install playwright using the following command:
 ```bash
 playwright install
 ```
-6. Install browser specific dependencies using the following command:
+2. (Optional) Install browser specific dependencies using the following command:
 ```bash
 playwright install chromium
 ```
 
-Note: Modify the geolocation in __get_playwright_meta() accordingly so that its accepted by the input URL
+### Rotating Proxy Setup
+> Requires Docker to be installed on the system
 
+To start the rotating proxy server, follow the steps mentioned below:
 
-## TODO:
-1. Install asyncio when using scrapy
-2. Use [emunium](https://github.com/DedInc/emunium) for actions to mimic human behavior
-3. Use [scrapy-impersonate](https://github.com/jxlil/scrapy-impersonate), [browserforge](https://github.com/daijro/browserforge) to impersonate different browser
-4. Test [Botright](https://github.com/Vinyzu/Botright) for untrackable scraping
+1. Import the docker container using the following command:
+```bash
+ zcat rotating-proxy.gz | docker import - rotating-proxy
+```
+2. Run the docker container using the following command:
+```bash
+docker run -d it -p 3128:3128 -p 4444:4444 -e "TOR_INSTANCES=5" -e "TOR_REBUILD_INTERVAL=3600" --name rotating-proxy rotating-proxy
+```
 
+3. To stop the docker container, use the following command:
+```bash
+docker stop rotating-proxy
+```
 
-## Notes:
-- Scrapy: powerful but too complicated
-- Scrapy-Scraper: easy to use but only loads the links
-- Botasaurus: wrapper around selenium
-- Harambe: uses playwright for listing and detail scrape but requires selectors
-- ScraperAi: Requires OpenAI API key
-- Quokka-Web: No Documentation
+## Outputs
+The project generates the following outputs:
+
+- `results.txt`: Contains all the URLs from which the data was collected and the data collected
+- `downloads`: Contains the downloaded files from the URLs, organized by the domain name
+
+## Options
+
+The Application supports the following options:
+> `urls` and `out` Options are Mandatory
+
+- `urls`: File with URLs or a single URL to start crawling and scraping from.  
+Usage: `-u urls.txt` or `--urls = https://example.com/home`.
+
+- `whitelist`: File with whitelisted domains to limit the crawling scope. Specify `off` to disable domain whitelisting. Default: domains extracted from initial URLs.  
+Usage: `-w whitelist.txt` or `--whitelist = off`.
+
+- `links`: Include all links and sources (including 3rd party) in the output file.  
+Usage: `-l` or `--links`.
+
+- `playwright`: Use Playwright's headless browser.  
+Usage: `-p` or `--playwright`.
+
+- `concurrent-requests`: Number of concurrent requests. (Default: 30)  
+Usage: `-cr 10` or `--concurrent-requests = 10`.
+
+- `concurrent-requests-domain`: Number of concurrent requests per domain. (Default: 10)  
+Usage: `-crd 5` or `--concurrent-requests-domain = 5`.
+
+- `sleep`: Sleep time between two consecutive requests to the same domain. Specify `random` to sleep a random amount of time between 0.5 and 1.5 seconds. (Default: 1.5)  
+Usage: `-s 1` or `--sleep = random`.
+
+- `auto-throttle`: Auto throttle concurrent requests based on the load and latency.  
+Usage: `-at 0.5` or `--auto-throttle = 10`.
+
+- `recursion`: Recursion depth limit. Specify `0` for no limit (Default: 1)  
+Usage: `-r 2` or `--recursion = 2`.
+
+- `user-agent`: User agent to use. Specify `random` to use a random user agent.  
+Usage: `-a curl/3.30.1` or `--user-agent = random`.
+
+- `proxy`: Web proxy to use.
+Usage: `-x http://http://127.0.0.1:8080` or `--proxy = http://127.0.0.1:8080`
+
+- `directory`: Output directory. All extracted files will be saved in this directory.  
+Usage: `-dir downloads` or `--directory = downloads`.
+
+- `out`: Output file containing crawled links.  
+Usage: `-o results.txt` or `--out = results.txt`.
+
+## Usage
+### Basic Usage
+To run the project, follow the steps mentioned below:
+
+1. Create a file named `urls.txt` and add the URLs from which the data needs to be collected
+2. Run the following command to start the project:
+```bash
+python webdredger.py -u urls.txt -o results.txt
+```
+
+### Using Playwright
+To use Playwright to get data from the URLs, use the `-p` or `--playwright` option with the command:
+```bash
+python webdredger.py -u urls.txt -o results.txt --playwright
+```
+
+### Using Rotating Proxy
+To use the rotating proxy server, use the `-x` or `--proxy` option with the command after starting the rotating proxy container:
+```bash
+python webdredger.py -u urls.txt -o results.txt -x  http://127.0.0.1:3128
+```
+
+### Recommended Usage
+```bash
+python webdredger.py -u urls.txt -o results.txt -l -s random -a random -dir downloads -r 1 -cr 5 -crd 10 -at 0.5 -x http://127.0.0.1:3128 -p
+```
+
+## TODO
+- [ ] Add feature to extract specific data 
+- [ ] Add features to hide the browser and TLS fingerprinting
+- [ ] Improve the measures to avoid detection
+- [ ] Improve the function to avoid honeypots
+- [ ] Integrate the application with a database

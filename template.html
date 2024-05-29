@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webdredger Report</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            margin-top: 30px;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Webdredger Report</h1>
+    <h2>Summary</h2>
+    <ul>
+        <li>Start Time: {{ results.start_time }}</li>
+        <li>End Time: {{ results.end_time }}</li>
+        <li>Time taken: {{ results.time_taken }}</li>
+        <li>Method used: {{ "Playwright" if results.playwright_used else "Requests" }}</li>
+        <li>Total URLs crawled: {{ results.total_urls_crawled }}</li>
+        <li>Total URLs collected: {{ results.total_urls_collected }}</li>
+        <li>Total assets downloaded: {{ results.total_assets_downloaded }}</li>
+        <li>Average time taken to crawl URL: {{ results.avg_time_per_url }}</li>
+    </ul>
+    
+    <h2>Scraper Stats</h2>
+    {% if results.scraper_stats %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Stat</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat, value in results.scraper_stats.items() %}
+                <tr>
+                    <td>{{ stat }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No stats available.</p>
+    {% endif %}
+    
+    <h2>Downloaded Files</h2>
+    {% if results.downloaded_files %}
+        <ul>
+            {% for domain, paths in results.downloaded_files.items() %}
+                <li>
+                    <h3>{{ domain }}</h3>
+                    <ul>
+                        {% for path, files in paths.items() %}
+                            <li>
+                                <h4>{{ path }}</h4>
+                                <ul>
+                                    {% for file in files.files %}
+                                        <li><a href="{{ file[1] }}" target="_blank">{{ file[0] }}</a></li>
+                                    {% endfor %}
+                                    {% for sub_path, sub_files in files.items() %}
+                                        {% if sub_path != "files" %}
+                                            <li>
+                                                <h5>{{ sub_path }}</h5>
+                                                <ul>
+                                                    {% for sub_file in sub_files.files %}
+                                                        <li><a href="{{ sub_file[1] }}" target="_blank">{{ sub_file[0] }}</a></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No files downloaded.</p>
+    {% endif %}
+</body>
+</html>
