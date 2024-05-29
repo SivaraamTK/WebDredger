@@ -29,23 +29,7 @@ playwright install chromium
 ```
 
 ### Rotating Proxy Setup
-> Requires Docker to be installed on the system
-
-To start the rotating proxy server, follow the steps mentioned below:
-
-1. Import the docker container using the following command:
-```bash
- zcat rotating-proxy.gz | docker import - rotating-proxy
-```
-2. Run the docker container using the following command:
-```bash
-docker run -d it -p 3128:3128 -p 4444:4444 -e "TOR_INSTANCES=5" -e "TOR_REBUILD_INTERVAL=3600" --name rotating-proxy rotating-proxy
-```
-
-3. To stop the docker container, use the following command:
-```bash
-docker stop rotating-proxy
-```
+**WIP**
 
 ## Outputs
 The project generates the following outputs:
