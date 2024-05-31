@@ -85,30 +85,44 @@ Usage: `-o results.txt` or `--out = results.txt`.
 ### Basic Usage
 To run the project, follow the steps mentioned below:
 
-1. Create a file named `urls.txt` and add the URLs from which the data needs to be collected
+1. Create a file named `urls.txt` and add the URLs from which the data needs to be collected or mention the URL directly in the command for ```-u``` or ```--urls``` option
 2. Run the following command to start the project:
 ```bash
-python webdredger.py -u urls.txt -o results.txt
+python scraper.py -u urls.txt -o results.txt
 ```
 
 ### Using Playwright
 To use Playwright to get data from the URLs, use the `-p` or `--playwright` option with the command:
 ```bash
-python webdredger.py -u urls.txt -o results.txt --playwright
+python scraper.py -u urls.txt -o results.txt --playwright
 ```
 
-### Using Rotating Proxy
-To use the rotating proxy server, use the `-x` or `--proxy` option with the command after starting the rotating proxy container:
+### Using Proxy
+To use proxy server, use the `-x` or `--proxy` option with the command after starting the rotating proxy container:
 ```bash
-python webdredger.py -u urls.txt -o results.txt -x  http://127.0.0.1:3128
+python scraper.py -u urls.txt -o results.txt -x  http://127.0.0.1:3128
 ```
 
 ### Recommended Usage
 ```bash
-python webdredger.py -u urls.txt -o results.txt -l -s random -a random -dir downloads -r 1 -cr 5 -crd 10 -at 0.5 -x http://127.0.0.1:3128 -p
+python scraper.py -u urls.txt -o results.txt -l -s random -a random -dir downloads -r 1 -cr 5 -crd 10 -at 0.5 -x http://127.0.0.1:3128 -p
 ```
 
 ## TODO
+
+### Phase 1 - Fesaibility Framework
+
+- [x] implement CAPTCHA detection
+- [ ] implement IP blocking detection
+- [ ] implement user-agent or header-based detection
+- [x] implement location-based detection
+- [ ] implement honeypot detection
+- [ ] implement AJAX or XHR-based detection
+- [ ] implement rate limiting detection
+- [ ] implement headless browser detection
+
+### Phase 2 - Scraper Framework
+
 - [ ] Add feature to extract specific data 
 - [ ] Add features to hide the browser and TLS fingerprinting
 - [ ] Improve the measures to avoid detection

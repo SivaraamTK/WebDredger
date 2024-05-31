@@ -180,3 +180,4 @@ cython_debug/
 /test-results
 /scraping_benchmark.xlsx
 /storage
+/selenium-logs

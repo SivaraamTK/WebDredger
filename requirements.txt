@@ -20,3 +20,5 @@ selenium
 webdriver_manager
 pandas
 xlsxwriter
+free-proxy
+lxml
