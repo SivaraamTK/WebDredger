@@ -11,7 +11,7 @@ tldextract
 jinja2
 memory-profiler
 pyppeteer
-crawlee
+crawlee[playwright, beautifulsoup]
 mechanicalsoup
 pyquery
 requests

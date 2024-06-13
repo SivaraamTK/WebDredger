@@ -181,3 +181,4 @@ cython_debug/
 /scraping_benchmark.xlsx
 /storage
 /selenium-logs
+/playwright-logs

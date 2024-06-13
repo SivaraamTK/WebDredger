@@ -1,22 +1,20 @@
-#TODO: convert selenium to playwright
-
-import os
+#TODO: Save screenshots of failure requests
 import time
-import datetime
-import concurrent.futures
-from fp.fp import FreeProxy
-from requests import Session
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-PROXY_URL = "http://127.0.0.1:3128"
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
+# chrome_options.add_argument('--headless')
+chrome_options.add_argument("--log-level=3")
 
-# Create the selenium-logs folder if it doesn't exist
-if not os.path.exists("selenium-logs"):
-    os.makedirs("selenium-logs")
+chrome_service = Service(ChromeDriverManager().install())
+           
 
 def check_auth_wall(url):
     # Keywords that indicate a login page
@@ -33,19 +31,7 @@ def check_auth_wall(url):
     flag = False
 
     try:
-        options = webdriver.ChromeOptions()
-        # add options here
-        
-        # Enable detailed logging
-        caps = DesiredCapabilities.CHROME
-        caps['goog:loggingPrefs'] = {'browser': 'ALL'}
-        
-        # Specify the log file path
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        log_file_path = f"selenium-logs/{timestamp}.log"
-        service = Service(ChromeDriverManager().install(), log_path=log_file_path)
-        
-        driver = webdriver.Chrome(service=service, options=options, desired_capabilities=caps)
+        driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
         driver.get(url)
         driver.implicitly_wait(10)
 
@@ -101,14 +87,12 @@ def check_auth_wall(url):
         driver.quit()
         if flag:
             print(f"Auth wall detected on {url}")
-            return True
-        print(f"No Auth wall detected on {url}")
-        return False
+        else:
+            print(f"No Auth wall detected on {url}")
+        return flag
 
     except Exception as e:
         print(f"Error checking URL: {e}")
-        if driver:
-            driver.quit()
         return None
 
 def check_captcha_service(url):
@@ -125,19 +109,7 @@ def check_captcha_service(url):
     flag = False
 
     try:
-        options = webdriver.ChromeOptions()
-        # add options here
-        
-        # Enable detailed logging
-        caps = DesiredCapabilities.CHROME
-        caps['goog:loggingPrefs'] = {'browser': 'ALL'}
-        
-        # Specify the log file path
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        log_file_path = f"selenium-logs/{timestamp}.log"
-        service = Service(ChromeDriverManager().install(), log_path=log_file_path)
-        
-        driver = webdriver.Chrome(service=service, options=options, desired_capabilities=caps)
+        driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
         driver.get(url)
         driver.implicitly_wait(10)
 
@@ -168,323 +140,229 @@ def check_captcha_service(url):
         driver.quit()
         if flag:
             print(f"Captcha service detected on {url}")
-            return True
-        print(f"No Captcha service detected on {url}")
-        return False
+        else:
+            print(f"No Captcha service detected on {url}")
+        return flag
 
     except Exception as e:
         print(f"Error checking {url}: {e}")
-        if driver:
-            driver.quit()
         return None
 
+#NOTE: Better to use proxy/vpn to spoof location as sites use IP address to determine location
 def check_location_based_access(url):
-    # List of countries to check
-    countries = [
-                    'US', 'UK', 'DE', 'JP', 'IN', 'GB',
-                    'BR', 'SG', 'AU', 'AO', 'VN', 
-                    # 'RU', 'CA', 'IT', 'KZ', 'LT', 
-                    # 'AE', 'VN', 'VE', 'IR', 'EG',
-                    # 'CN', 'NL', 'ID', 'CO', 'AO',
-                    # 'EC', 'AR', 'DO', 'MM', 'CL',
-                    # 'KR', 'ME', 'ZA', 'LY', 'BD',
-                    # 'EC', 'KH', 'TH', 'PH', 'MY',
-                ]
-
     blocker_keywords = [
-            'blocked', 'unavailable', 'restricted', 'denied', 'forbidden', 
-            '403', '404', '500', '502', '503', 
-            '504', 'error', 'not found', 'unauthorized', 'unavailable',
-        ]
-    
-    accessiblity_status = {}
-
-    flag = True
-
-    try:
-        options = webdriver.ChromeOptions()
-        # add options here
-        options.add_argument('--timeout=30')
+        'blocked', 'unavailable', 'restricted', 'denied', 'forbidden',
+        '403', '404', '500', '502', '503', '429', 'unsupported',
+        '504', 'error', 'not found', 'unauthorized', 'unavailable',
+    ]
+    tags_to_check = ['title', 'h1', 'h2', 'h3', 'iframe', 'embed']
+    locations = {
+        # Generally Unrestricted
+        'US': {'latitude': 36.778259, 'longitude': -119.417931},
+        'Canada': {'latitude': 43.651070, 'longitude': -79.347015},
+        'UK': {'latitude': 51.50722, 'longitude': -0.1275},
+        'Japan': {'latitude': 36.00000000, 'longitude': 138.00000000},
+        'Australia': {'latitude': -37.840935, 'longitude': 144.946457},
+        'India': {'latitude': 19.07283, 'longitude': 72.88261},
+        'Brazil': {'latitude': -23.533773, 'longitude': -46.625290},
+        'Nambia': {'latitude': -18.383333, 'longitude': 36.533333},
+        'Switzerland': {'latitude': 46.818188, 'longitude': 8.227511},
+        'Germany': {'latitude': 51.165691, 'longitude': 10.451526},
+        'Spain': {'latitude': 40.416775, 'longitude': -3.703790},
         
-        # Enable detailed logging
-        caps = DesiredCapabilities.CHROME
-        caps['goog:loggingPrefs'] = {'browser': 'ALL'}
-        
-        # Specify the log file path
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        log_file_path = f"selenium-logs/{timestamp}.log"
-        service = Service(ChromeDriverManager().install(), log_path=log_file_path)
-        
-        driver = webdriver.Chrome(service=service, options=options, desired_capabilities=caps)
-        driver.get(url)
-        driver.set_page_load_timeout(30)
-        driver.set_script_timeout(30)
-        driver.implicitly_wait(30)
+        # Mostly Restricted
+        'Russia': {'latitude': 55.75582600, 'longitude': 37.61729990},
+        'China': {'latitude': 39.90419900, 'longitude': 116.40739600},
+        'Iran': {'latitude': 32.42790800, 'longitude': 53.68804600},
+        'Syria': {'latitude': 34.80207400, 'longitude': 38.99681500},
+        'Sudan': {'latitude': 12.86280000, 'longitude': 30.21760000},
+        'Cuba': {'latitude': 4.60971000, 'longitude': -78.08161000},
+    }
 
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-        # Check if the page source is empty or contains a known error message
-        if not soup.text:
-            flag = False
-        for keyword in blocker_keywords:
-            if keyword in soup.text.lower():
-                flag = False
-                break
-        driver.quit()
-        if flag:
-            print(f"URL {url} is accessible directly")
-            accessiblity_status['Direct'] = True
-        else:
-            print(f"URL {url} is not accessible directly")
-            accessiblity_status['Direct'] = False
-    
-    except Exception as e:
-        print(f"Error checking {url} directly: {e}")
-        accessiblity_status['Direct'] = False
-
-    #TODO: Need better proxy
-    for country in countries:
+    for country, coords in locations.items():
         try:
-            flag = True
-
-            # proxy = FreeProxy(
-            #     country_id=country,
-            #     https=True,
-            #     # rand=True,
-            #     # anonym=True,
-            #     timeout=10
-            #     ).get()
-            # print(f"Using proxy: {proxy}")
+            print(f"Checking access from {country}...")        
+            
+            flag = False
             
             options = webdriver.ChromeOptions()
-            # add options here
-            options.add_argument('--proxy-server=%s' % PROXY_URL)
-            options.add_argument('--timeout=30')
-            
-            # Enable detailed logging
-            caps = DesiredCapabilities.CHROME
-            caps['goog:loggingPrefs'] = {'browser': 'ALL'}
-            
-            # Specify the log file path
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            log_file_path = f"selenium-logs/{timestamp}.log"
-            service = Service(ChromeDriverManager().install(), log_path=log_file_path)
-            
-            driver = webdriver.Chrome(service=service, options=options, desired_capabilities=caps)
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-gpu")
+            options.add_argument('--headless')
+            options.add_argument("--log-level=3")
+            chrome_options.add_experimental_option("prefs", {
+                "profile.default_content_setting_values.geolocation": 1,
+            })
+
+            driver = webdriver.Chrome(service=chrome_service, options=options)
+            driver.execute_cdp_cmd("Emulation.setGeolocationOverride", coords)
             driver.get(url)
-            driver.set_page_load_timeout(30)
-            driver.set_script_timeout(30)
-            driver.implicitly_wait(30)
-
+            driver.implicitly_wait(10)
+            
             soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-            # Check if the page source is empty or contains a known error message
+                        
             if not soup.text:
-                flag = False
-            for keyword in blocker_keywords:
-                if keyword in soup.text.lower():
-                    flag = False
+                print("No text found")
+                flag = True
+            for tag in tags_to_check:
+                elements = soup.find_all(tag)
+                for element in elements:
+                    if any(keyword in element.text.lower() for keyword in blocker_keywords):
+                        flag = True
+                        print(f"Blocking keyword found in {tag} text")
+                        break
+                    if any(keyword in str(attr).lower() for attr in element.attrs.values() for keyword in blocker_keywords):
+                        flag = True
+                        print(f"Blocking keyword found in {tag} attributes")
+                        break
+                if flag:
                     break
+                
+            
+            if not flag:
+                locations[country]['blocked'] = False
+                print(f"URL {url} did not block requests from {country}")
+            else:
+                locations[country]['blocked'] = True
+            time.sleep(2)
+            
+        except Exception as e:
+            print(f"Error checking {url} for blocking: {e}")
+        finally:
             driver.quit()
             if flag:
-                print(f"URL {url} is accessible from {country}")
-                accessiblity_status[country] = True
+                print(f"URL {url} blocked requests from {country}")
             else:
-                print(f"URL {url} is not accessible from {country}")
-                accessiblity_status[country] = False
-
-        except Exception as e:
-            print(f"Error checking {url} from {country}: {e}")
-            accessiblity_status[country] = False
-            if driver:
-                driver.quit()
-            continue
-
-    print(f"URL - {url} accessibility status: \n")
-    for country, status in accessiblity_status.items():
-        if status:
-            print(f"{country} - Accessible")
-        else:
-            print(f"{country} - Not Accessible")
-
-def check_request_blocking(url, max_attempts = 100):
+                print(f"URL {url} did not block requests from {country}")
     
-    blocker_keywords = [
-            'blocked', 'unavailable', 'restricted', 'denied', 'forbidden', 
-            '403', '404', '500', '502', '503', 
-            '504', 'error', 'not found', 'unauthorized', 'unavailable',
-        ]
-    
-    def make_request(url, proxy, session = Session()):
-        try:
-            response = session.get(
-                url=url,
-                proxies={'https': proxy},
-                timeout=30
-                )
-            soup = BeautifulSoup(response.text, 'html.parser')
-            if not soup.text:
-                return True
-            for keyword in blocker_keywords:
-                if keyword in soup.text.lower():
-                    return True
-            return False
-        except Exception as e:
-            print(f"Error testing request blocker for {url} : {e}")
-            return None
+    print('Results:', locations)
+            
 
-    try:
-        print(f"Checking {url} for request blocking...")
-        sess = Session()
-        proxy = FreeProxy(
-            https=True,
-            # country_id='US',
-            # rand=True,
-            # anonym=True,
-            timeout=10
-            ).get()
-        print(f"Using proxy: {proxy}")
-        attempt_counter = 0
-        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-            futures = {executor.submit(make_request, url, proxy, sess) for _ in range(max_attempts)}
-            for future in concurrent.futures.as_completed(futures):
-                attempt_counter += 1
-                is_blocked = future.result()
-                if is_blocked == True:
-                    print(f"Request blocked after {attempt_counter} attempts for {url}")
-                    return True
-                time.sleep(1)
-        return False
-    except Exception as e:
-        print(f"Error setting up concurrent requests for {url} : {e}")
-        return None
-    
-def check_headless_detection(url):
-    blocker_keywords = [
-            'blocked', 'unavailable', 'restricted', 'denied', 'forbidden', 
-            '403', '404', '500', '502', '503', 
-            '504', 'error', 'not found', 'unauthorized', 'unavailable',
-        ]
+def check_request_blocking(url, max_attempts=10):
+    success_count = 0
     flag = False
+    blocker_keywords = [
+        'blocked', 'unavailable', 'restricted', 'denied', 'forbidden',
+        '403', '404', '500', '502', '503', '429',
+        '504', 'error', 'not found', 'unauthorized', 'unavailable',
+    ]
+    tags_to_check = ['title', 'h1', 'h2', 'h3', 'iframe', 'embed']
+    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    driver.implicitly_wait(10)
 
     try:
-        options = webdriver.ChromeOptions()
-        # add options here
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument('--timeout=30')
-        
-        # Enable detailed logging
-        caps = DesiredCapabilities.CHROME
-        caps['goog:loggingPrefs'] = {'browser': 'ALL'}
-        
-        # Specify the log file path
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        log_file_path = f"selenium-logs/{timestamp}.log"
-        service = Service(ChromeDriverManager(latest_release_url="https://storage.googleapis.com/chrome-for-testing-public/125.0.6422.141/win64/chromedriver-win64.zip").install(), log_path=log_file_path)
-        
-        driver = webdriver.Chrome(service=service, options=options, desired_capabilities=caps)
-        driver.get(url)
-        driver.set_page_load_timeout(30)
-        driver.set_script_timeout(30)
-        driver.implicitly_wait(30)
-
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-        if not soup.text:
-            flag = False
-        for keyword in blocker_keywords:
-            if keyword in soup.text.lower():
-                flag = False
+        for curr_attempt in range(1, max_attempts + 1):
+            driver.execute_script(f"window.open('about:blank', 'tab{curr_attempt}');")
+            driver.switch_to.window(f'tab{curr_attempt}')
+            driver.get(url)
+            driver.implicitly_wait(10)
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+            if not soup.text:
+                print("No text found")
+                continue
+            for tag in tags_to_check:
+                elements = soup.find_all(tag)
+                for element in elements:
+                    if any(keyword in element.text.lower() for keyword in blocker_keywords):
+                        flag = True
+                        print(f"Blocking keyword found in {tag} text")
+                        break
+                    if any(keyword in str(attr).lower() for attr in element.attrs.values() for keyword in blocker_keywords):
+                        flag = True
+                        print(f"Blocking keyword found in {tag} attributes")
+                        break
+                if flag:
+                    break
+            if not flag:
+                success_count += 1
+                print(f"URL {url} did not block requests on attempt {curr_attempt}, Total successes: {success_count}.")
+            else:
                 break
-
+            time.sleep(2)
+    except Exception as e:
+        print(f"Error checking {url} for blocking: {e}")
+    finally:
         driver.quit()
         if flag:
-            print(f"{url} not blocked normal browser")
+            print(f"URL {url} blocked requests after {curr_attempt} attempts, Total successes: {success_count}.")
         else:
-            print(f"{url} blocked normal browser")
+            print(f"URL {url} did not block requests till max attempts {max_attempts}, Total successes: {success_count}.")
+            
+def check_headless_detection(url):
+    flag_normal = False
+    flag_headless = False
     
-    except Exception as e:
-        print(f"Error checking {url} directly: {e}")
-        return None
+    options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
     
+    driver = webdriver.Chrome(service=chrome_service, options=options)
+    driver.get(url)
+    time.sleep(2)
+
     try:
-        options = webdriver.ChromeOptions()
-        # add options here
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--headless=new")
-        options.add_argument('--timeout=30')
-        
-        # Enable detailed logging
-        caps = DesiredCapabilities.CHROME
-        caps['goog:loggingPrefs'] = {'browser': 'ALL'}
-        
-        # Specify the log file path
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        log_file_path = f"selenium-logs/{timestamp}.log"
-        service = Service(ChromeDriverManager(driver_version="125.0.6422.142", url="https://storage.googleapis.com/chrome-for-testing-public/125.0.6422.141", latest_release_url="https://storage.googleapis.com/chrome-for-testing-public/125.0.6422.141").install(), log_path=log_file_path)
-        
-        driver = webdriver.Chrome(service=service, options=options, desired_capabilities=caps)
-        driver.get(url)
-        driver.set_page_load_timeout(30)
-        driver.set_script_timeout(30)
-        driver.implicitly_wait(30)
-
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-        if not soup.text:
-            flag = False
-        for keyword in blocker_keywords:
-            if keyword in soup.text.lower():
-                flag = False
-                break
-        
-        driver.quit()
-        if flag:
-            print(f"{url} not blocked headless browser")
-        else:
-            print(f"{url} blocked headless browser")
-        
+        element = driver.find_element(By.TAG_NAME, "body")
+        if element:
+            print(f"Normal browser, Page title: {driver.title}")
+            flag_normal = True
     except Exception as e:
-        print(f"Error checking {url} headless: {e}")
-        if driver:
-            driver.quit()
-        return None
+        print(f"Normal browser, Error: {e}")
+    finally:
+        driver.quit()
     
-    if flag:
-        return False
+    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    driver.get(url)
+    time.sleep(2)
+
+    try:
+        element = driver.find_element(By.TAG_NAME, "body")
+        if element:
+            print(f"Normal browser, Page title: {driver.title}")
+            flag_headless = True
+    except Exception as e:
+        print(f"Normal browser, Error: {e}")
+    finally:
+        driver.quit()
+
+    if flag_normal and not flag_headless:
+        print("The URL blocks headless browsers.")
+    elif not flag_normal and flag_headless:
+        print("The URL blocks normal browsers.")
+    elif not flag_normal and not flag_headless:
+        print("The URL blocks both normal and headless browsers.")
     else:
-        return True
-
+        print("The URL is accessible by both normal and headless browsers.")
 
 if __name__ == '__main__':
     url = 'https://www.google.com'
-    check_headless_detection(url)
-    # urls_to_check = ['https://facebook.com', 'https://linkedin.com', 'https://google.com']
-    # for url in urls_to_check:
-    #     print(f"Checking URL: {url}")
-        # has_auth_wall = check_auth_wall(url)
-        # if has_auth_wall:
-        #     print(f"The URL {url} likely has an Auth Wall.")
-        # else:
-        #     print(f"The URL {url} does not appear to have an Auth Wall.")
+    urls_to_check = [
+        # 'https://linkedin.com', 
+        # 'https://google.com',
+        # 'https://www.youtube.com',
+        # 'https://www.amazon.com',
+        'https://www.crackle.com/'
+        ]
+    for url in urls_to_check:
+        print(f"Checking URL: {url}")
+        if check_auth_wall(url):
+            print(f"The URL {url} likely has an Auth Wall.")
+        else:
+            print(f"The URL {url} does not appear to have an Auth Wall.")
 
-        # has_captcha_service = check_captcha_service(url)
-        # if has_captcha_service:
-        #     print(f"The URL {url} likely has a Captcha service.")
-        # else:
-        #     print(f"The URL {url} does not appear to have a Captcha service.")
-
-        # check_location_based_access(url)
-
-        # request_attempts = check_request_blocking(url)
-
-        # if request_attempts == -1:
-        #     print(f"The URL {url} did not block requests till max attempts.")
-        # elif not request_attempts:
-        #     print(f"Error checking {url} for blocking.")
-        # else:
-        #     print(f"The URL {url} blocked requests after {request_attempts} attempts.")
+        if check_captcha_service(url):
+            print(f"The URL {url} likely has a Captcha service.")
+        else:
+            print(f"The URL {url} does not appear to have a Captcha service.")
+        
+        if check_headless_detection(url):
+            print(f"The URL {url} likely has headless detection.")
+        else:
+            print(f"The URL {url} does not appear to have headless detection.")
+        
+        check_request_blocking(url)
+        
+        check_location_based_access(url)

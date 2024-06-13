@@ -1,5 +1,7 @@
 import os
+import re
 import time
+from urllib.parse import urlparse
 import psutil
 import requests
 import httpx
@@ -21,45 +23,64 @@ from crawlee.storages.request_queue import RequestQueue
 from lxml import html
 from pyquery import PyQuery as pq
 
+def sanitize_filename(filename):
+	"""Sanitize the filename by replacing invalid characters with `_` ."""
+	filename = filename.replace('www.','').replace('https://','').replace('http://','').replace('.com','')
+	filename = re.sub(r'[^a-zA-Z0-9_]', '_', filename)
+	filename = re.sub(r'__+', '_', filename)
+	return filename.rstrip('_')
+
 # Define a function to measure time, memory, CPU usage, network requests and data size
 def benchmark(func):
 	def wrapper(*args, **kwargs):
 		try:
+			# Measure the starting metrics
 			start_time = time.time()
 			start_memory = psutil.Process(os.getpid()).memory_info().rss
 			start_cpu = psutil.cpu_percent(interval=1)
 			start_requests = len(psutil.net_connections())
 
+			# Execute the function
+			result = func(*args, **kwargs)
+
+			# Measure the ending metrics
 			end_time = time.time()
 			end_memory = psutil.Process(os.getpid()).memory_info().rss
 			end_cpu = psutil.cpu_percent(interval=1)
 			end_requests = len(psutil.net_connections())
 
+			# Calculate the metrics
 			time_taken = end_time - start_time
 			memory_used = end_memory - start_memory
 			cpu_used = end_cpu - start_cpu
 			requests_made = end_requests - start_requests
 
-			result = func(*args, **kwargs)
+   			# Check the quality of the result
 			result_content = result['content']
 			keyword_output = {}
-			for keyword in KEYWORDS:
-				keyword_output[keyword] = True if keyword in result_content.lower() else False
 			status = result['status_code']
-			if status >= 200 or status < 300:
-				result_status = "Success"
+			if status >= 200 and status < 300:
+				result_status = "Successful"
+				for keyword in KEYWORDS:
+					keyword_output[keyword] = True if keyword in result_content.lower() else False
+				if all(keyword_output.values()):
+					keyword_check = "Complete"
+				elif not any(keyword_output.values()):
+					keyword_check = "Missing"
+				else:
+					keyword_check = "Incomplete"
 			else:
-				result_status = "Falied"
-			if all(keyword_output.values()):
-				keyword_check = "Complete"
-			elif not any(keyword_output.values()):
+				result_status = "Failed"
+				for keyword in KEYWORDS:
+					keyword_output[keyword] = False
 				keyword_check = "Missing"
-			else:
-				keyword_check = "Incomplete"
+    
+			url = args[0] if args else kwargs.get('url', 'unknown')
+			sanitized_url = sanitize_filename(url)
 
 			print(f"Benchmarked {func.__name__}")
 			# Save the result and metrics to a file
-			with open(f'test-results/{func.__name__}.txt', 'w', encoding='utf-8') as f:
+			with open(f'test-results/{func.__name__}-{sanitized_url}.html', 'w', encoding='utf-8') as f:
 				f.write(f"{result_content}\n")
 				f.write(f"Status:\n{result_status}\n")
 				f.write(f"Keyword Check:\n{keyword_check}\n")
@@ -100,41 +121,53 @@ def benchmark(func):
 def async_benchmark(func):
 	async def wrapper(*args, **kwargs):
 		try:
+			# Measure the starting metrics
 			start_time = time.time()
 			start_memory = psutil.Process(os.getpid()).memory_info().rss
 			start_cpu = psutil.cpu_percent(interval=1)
 			start_requests = len(psutil.net_connections())
 
+			# Execute the function
 			result = await func(*args, **kwargs)
-			result_content = result['content']
-			keyword_output = {}
-			for keyword in KEYWORDS:
-				keyword_output[keyword] = True if keyword in result_content.lower() else False
-			status = result['status_code']
-			if status >= 200 or status < 300:
-				result_status = "Success"
-			else:
-				result_status = "Fail"
-			if all(keyword_output.values()):
-				keyword_check = "Complete"
-			elif not any(keyword_output.values()):
-				keyword_check = "Missing"
-			else:
-				keyword_check = "Incomplete"
 
+			# Measure the ending metrics
 			end_time = time.time()
 			end_memory = psutil.Process(os.getpid()).memory_info().rss
 			end_cpu = psutil.cpu_percent(interval=1)
 			end_requests = len(psutil.net_connections())
 
+			# Calculate the metrics
 			time_taken = end_time - start_time
 			memory_used = end_memory - start_memory
 			cpu_used = end_cpu - start_cpu
 			requests_made = end_requests - start_requests
 
+   			# Check the quality of the result
+			result_content = result['content']
+			status = result['status_code']
+			keyword_output = {}
+			if status >= 200 and status < 300:
+				result_status = "Successful"
+				for keyword in KEYWORDS:
+					keyword_output[keyword] = True if keyword in result_content.lower() else False
+				if all(keyword_output.values()):
+					keyword_check = "Complete"
+				elif not any(keyword_output.values()):
+					keyword_check = "Missing"
+				else:
+					keyword_check = "Incomplete"
+			else:
+				result_status = "Failed"
+				for keyword in KEYWORDS:
+					keyword_output[keyword] = False
+				keyword_check = "Missing"
+    
+			url = args[0] if args else kwargs.get('url', 'unknown')
+			sanitized_url = sanitize_filename(url)
+
 			print(f"Benchmarked {func.__name__}")
 			# Save the result and metrics to a file
-			with open(f'test-results/{func.__name__}.txt', 'w', encoding='utf-8') as f:
+			with open(f'test-results/{func.__name__}-{sanitized_url}.html', 'w', encoding='utf-8') as f:
 				f.write(f"{result_content}\n")
 				f.write(f"Status:\n{result_status}\n")
 				f.write(f"Keyword Check:\n{keyword_check}\n")
@@ -420,8 +453,8 @@ async def benchmark_scraping_tools(url):
 
 def rank_tools(results, key_metric, sort_order='asc'):
 	# Separate successful and failed methods
-	successful_methods = {k: v for k, v in results.items() if v['status'] == 'Success'}
-	failed_methods = {k: v for k, v in results.items() if v['status'] == 'Fail'}
+	successful_methods = {k: v for k, v in results.items() if v['status'] == 'Successful'}
+	failed_methods = {k: v for k, v in results.items() if v['status'] == 'Failed'}
 
 	# Further group successful methods
 	complete_methods = {k: v for k, v in successful_methods.items() if v['keyword_check'] == 'Complete'}
@@ -488,10 +521,12 @@ def main(urls, key_metric, sort_order='asc'):
 		temp_df = pd.concat([temp_df.drop('keywords', axis=1), keywords_df], axis=1)
 
 		# Create a valid sheet name by replacing invalid characters with underscores
-		sheet_name = url.replace("https://", "").replace("www.", "").replace("/", "_").replace(".", "_")[:31]
-
+		parsed_url = urlparse(url)
+		domain_subdomain = parsed_url.hostname+parsed_url.path
+		sheet_name = sanitize_filename(domain_subdomain)[:31]
+  
 		# Write the DataFrame to a sheet in the Excel file
-		temp_df.to_excel(writer, sheet_name=sheet_name, index=False)  # sheet_name is limited to 31 characters
+		temp_df.to_excel(writer, sheet_name=sheet_name, index=False) 
 
 	# Save the Excel file
 	writer._save()
@@ -500,6 +535,11 @@ def main(urls, key_metric, sort_order='asc'):
 KEYWORDS = ["linkedin", "jman", "jman group", "software", "data"]
 
 if __name__ == "__main__":
+    
+	# Create the directory if it does not exist
+	if not os.path.exists('test-results'):
+		os.makedirs('test-results')
+    
 	url = ["https://www.linkedin.com/company/jman-group/", "https://www.linkedin.com/in/bipin-m-a3834219b/"] # change this to the URL you want to scrape
 	key_metric = 'time_taken'  # change this to the metric you want to sort by
 	sort_order = 'asc'  # change this to 'asc' or 'desc' to sort in ascending or descending order

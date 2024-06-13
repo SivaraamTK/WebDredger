@@ -23,7 +23,6 @@ reference:
 '''
 
 # Import the required modules
-from audioop import avg
 import os
 from collections import defaultdict
 from argparse import ArgumentParser
