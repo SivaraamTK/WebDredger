@@ -10,13 +10,21 @@ chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--disable-gpu")
-# chrome_options.add_argument('--headless')
+chrome_options.add_argument('--headless')
 chrome_options.add_argument("--log-level=3")
 
-chrome_service = Service(ChromeDriverManager().install())
-           
+chrome_service = Service(ChromeDriverManager().install())           
 
 def check_auth_wall(url):
+    """
+    Checks if a given URL is behind an authentication wall.
+
+    Args:
+        url (str): The URL to check.
+
+    Returns:
+        None
+    """
     # Keywords that indicate a login page
     auth_keywords = ['login', 'signin', 'auth', 'register', 'signup', 
                             'sign in', 'sign up', 'log in', 'join us', 
@@ -89,14 +97,27 @@ def check_auth_wall(url):
             print(f"Auth wall detected on {url}")
         else:
             print(f"No Auth wall detected on {url}")
-        return flag
 
     except Exception as e:
         print(f"Error checking URL: {e}")
-        return None
+        return True
+    
+    finally:
+        try:
+            driver.quit()
+        except:
+            pass
 
 def check_captcha_service(url):
+    """
+    Checks if a given URL is using a captcha service by searching for captcha keywords in the HTML tags and attributes.
 
+    Args:
+        url (str): The URL to check for captcha service.
+
+    Returns:
+        None
+    """
     captcha_keywords = ['captcha', 'recaptcha', 'hcaptcha', 'securimage', 
                         'distil-captcha', 'turnstile', 'geetest', 'keycaptcha',
                         'lemin', 'textcaptcha', 'text-captcha', 'funcaptcha',
@@ -142,14 +163,29 @@ def check_captcha_service(url):
             print(f"Captcha service detected on {url}")
         else:
             print(f"No Captcha service detected on {url}")
-        return flag
 
     except Exception as e:
         print(f"Error checking {url}: {e}")
-        return None
+        return True
+    
+    finally:
+        try:
+            driver.quit()
+        except:
+            pass
 
 #NOTE: Better to use proxy/vpn to spoof location as sites use IP address to determine location
 def check_location_based_access(url):
+    """
+    Checks the accessibility of a given URL from different countries,
+    and prints the results.
+    
+    Args:
+        url (str): The URL to check for accessibility.
+    
+    Returns:
+        None
+    """
     blocker_keywords = [
         'blocked', 'unavailable', 'restricted', 'denied', 'forbidden',
         '403', '404', '500', '502', '503', '429', 'unsupported',
@@ -159,25 +195,37 @@ def check_location_based_access(url):
     locations = {
         # Generally Unrestricted
         'US': {'latitude': 36.778259, 'longitude': -119.417931},
-        'Canada': {'latitude': 43.651070, 'longitude': -79.347015},
         'UK': {'latitude': 51.50722, 'longitude': -0.1275},
-        'Japan': {'latitude': 36.00000000, 'longitude': 138.00000000},
-        'Australia': {'latitude': -37.840935, 'longitude': 144.946457},
         'India': {'latitude': 19.07283, 'longitude': 72.88261},
-        'Brazil': {'latitude': -23.533773, 'longitude': -46.625290},
-        'Nambia': {'latitude': -18.383333, 'longitude': 36.533333},
-        'Switzerland': {'latitude': 46.818188, 'longitude': 8.227511},
-        'Germany': {'latitude': 51.165691, 'longitude': 10.451526},
-        'Spain': {'latitude': 40.416775, 'longitude': -3.703790},
+        # 'Canada': {'latitude': 43.651070, 'longitude': -79.347015},
+        # 'Japan': {'latitude': 36.00000000, 'longitude': 138.00000000},
+        # 'Australia': {'latitude': -37.840935, 'longitude': 144.946457},
+        # 'Brazil': {'latitude': -23.533773, 'longitude': -46.625290},
+        # 'Nambia': {'latitude': -18.383333, 'longitude': 36.533333},
+        # 'Switzerland': {'latitude': 46.818188, 'longitude': 8.227511},
+        # 'Germany': {'latitude': 51.165691, 'longitude': 10.451526},
+        # 'Spain': {'latitude': 40.416775, 'longitude': -3.703790},
         
         # Mostly Restricted
         'Russia': {'latitude': 55.75582600, 'longitude': 37.61729990},
         'China': {'latitude': 39.90419900, 'longitude': 116.40739600},
-        'Iran': {'latitude': 32.42790800, 'longitude': 53.68804600},
-        'Syria': {'latitude': 34.80207400, 'longitude': 38.99681500},
-        'Sudan': {'latitude': 12.86280000, 'longitude': 30.21760000},
-        'Cuba': {'latitude': 4.60971000, 'longitude': -78.08161000},
+        # 'Iran': {'latitude': 32.42790800, 'longitude': 53.68804600},
+        # 'Syria': {'latitude': 34.80207400, 'longitude': 38.99681500},
+        # 'Sudan': {'latitude': 12.86280000, 'longitude': 30.21760000},
+        # 'Cuba': {'latitude': 4.60971000, 'longitude': -78.08161000},
     }
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument('--headless')
+    options.add_argument("--log-level=3")
+    chrome_options.add_experimental_option("prefs", {
+        "profile.default_content_setting_values.geolocation": 1,
+    })
+
+    driver = webdriver.Chrome(service=chrome_service, options=options)
 
     for country, coords in locations.items():
         try:
@@ -185,17 +233,6 @@ def check_location_based_access(url):
             
             flag = False
             
-            options = webdriver.ChromeOptions()
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-gpu")
-            options.add_argument('--headless')
-            options.add_argument("--log-level=3")
-            chrome_options.add_experimental_option("prefs", {
-                "profile.default_content_setting_values.geolocation": 1,
-            })
-
-            driver = webdriver.Chrome(service=chrome_service, options=options)
             driver.execute_cdp_cmd("Emulation.setGeolocationOverride", coords)
             driver.get(url)
             driver.implicitly_wait(10)
@@ -218,7 +255,8 @@ def check_location_based_access(url):
                         break
                 if flag:
                     break
-                
+
+            driver.quit()
             
             if not flag:
                 locations[country]['blocked'] = False
@@ -230,16 +268,28 @@ def check_location_based_access(url):
         except Exception as e:
             print(f"Error checking {url} for blocking: {e}")
         finally:
-            driver.quit()
+            try:
+                driver.quit()
+            except:
+                pass
             if flag:
                 print(f"URL {url} blocked requests from {country}")
             else:
                 print(f"URL {url} did not block requests from {country}")
     
     print('Results:', locations)
-            
-
+          
 def check_request_blocking(url, max_attempts=10):
+    """
+    Checks if a given URL blocks requests by searching for specific keywords in the HTML tags and attributes.
+    
+    Args:
+        url (str): The URL to check for blocking.
+        max_attempts (int, optional): The maximum number of attempts to check the URL. Defaults to 10.
+    
+    Returns:
+        None
+    """
     success_count = 0
     flag = False
     blocker_keywords = [
@@ -285,20 +335,33 @@ def check_request_blocking(url, max_attempts=10):
     except Exception as e:
         print(f"Error checking {url} for blocking: {e}")
     finally:
-        driver.quit()
+        try:
+            driver.quit()
+        except:
+            pass
         if flag:
             print(f"URL {url} blocked requests after {curr_attempt} attempts, Total successes: {success_count}.")
         else:
             print(f"URL {url} did not block requests till max attempts {max_attempts}, Total successes: {success_count}.")
             
 def check_headless_detection(url):
+    """
+    Checks if a given URL blocks headless browsers, normal browsers, or both.
+    
+    Args:
+        url (str): The URL to check.
+    
+    Returns:
+        None
+    """
     flag_normal = False
     flag_headless = False
     
     options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--log-level=3")
     
     driver = webdriver.Chrome(service=chrome_service, options=options)
     driver.get(url)
@@ -326,7 +389,10 @@ def check_headless_detection(url):
     except Exception as e:
         print(f"Normal browser, Error: {e}")
     finally:
-        driver.quit()
+        try:
+            driver.quit()
+        except:
+            pass
 
     if flag_normal and not flag_headless:
         print("The URL blocks headless browsers.")
@@ -348,20 +414,12 @@ if __name__ == '__main__':
         ]
     for url in urls_to_check:
         print(f"Checking URL: {url}")
-        if check_auth_wall(url):
-            print(f"The URL {url} likely has an Auth Wall.")
-        else:
-            print(f"The URL {url} does not appear to have an Auth Wall.")
-
-        if check_captcha_service(url):
-            print(f"The URL {url} likely has a Captcha service.")
-        else:
-            print(f"The URL {url} does not appear to have a Captcha service.")
         
-        if check_headless_detection(url):
-            print(f"The URL {url} likely has headless detection.")
-        else:
-            print(f"The URL {url} does not appear to have headless detection.")
+        check_auth_wall(url)
+        
+        check_captcha_service(url)
+        
+        check_headless_detection(url)
         
         check_request_blocking(url)
         
