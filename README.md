@@ -112,12 +112,12 @@ python scraper.py -u urls.txt -o results.txt -l -s random -a random -dir downloa
 
 ### Phase 1 - Fesaibility Framework
 
-- [ ] implement IP blocking detection
-- [ ] implement user-agent or header-based detection
-- [ ] implement honeypot detection
-- [ ] implement AJAX or XHR-based detection
-- [ ] implement rate limiting detection
-- [ ] implelemnt screenshot to save results
+- [ ] Implement header-based detection
+- [ ] Implement honeypot detection
+- [ ] Implement AJAX or XHR-based detection
+- [ ] Implement rate limiting detection
+- [ ] Implement screenshot to save results
+- [ ] Result report generation
 
 ### Phase 2 - Scraper Framework
 

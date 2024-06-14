@@ -32,12 +32,39 @@ def sanitize_filename(filename):
 
 # Define a function to measure time, memory, CPU usage, network requests and data size
 def benchmark(func):
+	"""
+	Benchmark a given function by measuring its execution time, memory usage, CPU usage, and network requests.
+
+	Parameters:
+	- func: The function to be benchmarked. It should not take any arguments.
+
+	Returns:
+	- A dictionary containing the benchmark results
+	"""
 	def wrapper(*args, **kwargs):
+		"""
+		Benchmark a given function by measuring its execution time, memory usage, CPU usage, and network requests.
+
+		Parameters:
+		- *args: Positional arguments to be passed to the function.
+		- **kwargs: Keyword arguments to be passed to the function.
+
+		Returns:
+		- A dictionary containing the benchmark results. The dictionary has the following keys:
+			- 'status': The status of the function execution ('Successful' or 'Failed').
+			- 'content': The content returned by the function.
+			- 'keyword_check': The result of checking the presence of keywords in the content ('Complete', 'Incomplete', or 'Missing').
+			- 'keywords': A dictionary containing the presence or absence of keywords in the content.
+			- 'time_taken': The time taken by the function to execute.
+			- 'memory_used': The memory used by the function.
+			- 'cpu_used': The CPU usage by the function.
+			- 'requests_made': The number of network requests made by the function.
+		"""
 		try:
 			# Measure the starting metrics
 			start_time = time.time()
 			start_memory = psutil.Process(os.getpid()).memory_info().rss
-			start_cpu = psutil.cpu_percent(interval=1)
+			start_cpu = psutil.cpu_percent(interval=None)
 			start_requests = len(psutil.net_connections())
 
 			# Execute the function
@@ -46,7 +73,7 @@ def benchmark(func):
 			# Measure the ending metrics
 			end_time = time.time()
 			end_memory = psutil.Process(os.getpid()).memory_info().rss
-			end_cpu = psutil.cpu_percent(interval=1)
+			end_cpu = psutil.cpu_percent(interval=None)
 			end_requests = len(psutil.net_connections())
 
 			# Calculate the metrics
@@ -119,12 +146,40 @@ def benchmark(func):
 	return wrapper
 
 def async_benchmark(func):
+	"""
+	Benchmark a given asynchronous function .
+
+	Parameters:
+	- func: The function to be benchmarked.
+	
+	Returns:
+	- A dictionary containing the benchmark results
+
+	"""
 	async def wrapper(*args, **kwargs):
+		"""
+		An asynchronous function that measures the time, memory, CPU usage, network requests, and data size of the benchmarked function.
+		
+		Parameters:
+		- *args: Positional arguments to be passed to the benchmarked function.
+		- **kwargs: Keyword arguments to be passed to the benchmarked function.
+		
+		Returns:
+		- A dictionary containing the following keys:
+			- status: The status of the benchmarked function execution.
+			- content: The content of the result.
+			- keyword_check: The check status of the keywords in the result content.
+			- keywords: A dictionary indicating whether each keyword is present in the result content.
+			- time_taken: The time taken by the benchmarked function.
+			- memory_used: The memory used by the benchmarked function.
+			- cpu_used: The CPU usage by the benchmarked function.
+			- requests_made: The number of network requests made by the benchmarked function.
+		"""
 		try:
 			# Measure the starting metrics
 			start_time = time.time()
 			start_memory = psutil.Process(os.getpid()).memory_info().rss
-			start_cpu = psutil.cpu_percent(interval=1)
+			start_cpu = psutil.cpu_percent(interval=None)
 			start_requests = len(psutil.net_connections())
 
 			# Execute the function
@@ -133,7 +188,7 @@ def async_benchmark(func):
 			# Measure the ending metrics
 			end_time = time.time()
 			end_memory = psutil.Process(os.getpid()).memory_info().rss
-			end_cpu = psutil.cpu_percent(interval=1)
+			end_cpu = psutil.cpu_percent(interval=None)
 			end_requests = len(psutil.net_connections())
 
 			# Calculate the metrics
@@ -209,6 +264,15 @@ def async_benchmark(func):
 # HTTP request methods
 @benchmark
 def fetch_with_requests(url):
+	"""
+	Fetches content from a URL using the requests library.
+
+	Parameters:
+	- url: The URL to fetch content from.
+
+	Returns:
+	- A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		response = requests.get(url)
 		return {
@@ -224,6 +288,15 @@ def fetch_with_requests(url):
 
 @benchmark
 def fetch_with_httpx(url):
+	"""
+	Fetches content from a URL using the httpx library.
+
+	Parameters:
+	- url (str): The URL to fetch content from.
+
+	Returns:
+	- dict: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		response = httpx.get(url)
 		return {
@@ -239,6 +312,15 @@ def fetch_with_httpx(url):
 
 @benchmark
 def fetch_with_urllib3(url):
+	"""
+	Fetches content from a URL using the urllib3 library.
+
+	Parameters:
+	- url (str): The URL to fetch content from.
+
+	Returns:
+	- dict: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		http = PoolManager()
 		response = http.request('GET', url)
@@ -256,6 +338,15 @@ def fetch_with_urllib3(url):
 # HTML parsing methods
 @benchmark
 def fetch_with_beautifulsoup(url):
+	"""
+	Fetches content from a URL using BeautifulSoup library.
+
+	Parameters:
+	- url (str): The URL to fetch content from.
+
+	Returns:
+	- dict: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		response = requests.get(url)
 		soup = BeautifulSoup(response.content, 'html.parser')
@@ -272,6 +363,15 @@ def fetch_with_beautifulsoup(url):
 
 @benchmark
 def fetch_with_lxml(url):
+	"""
+	Fetches content from a URL using lxml library.
+
+	Parameters:
+	- url (str): The URL to fetch content from.
+
+	Returns:
+	- dict: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		response = requests.get(url)
 		tree = html.fromstring(response.content)
@@ -288,6 +388,15 @@ def fetch_with_lxml(url):
 
 @benchmark
 def fetch_with_pyquery(url):
+	"""
+	Fetches content from a URL using pyquery library.
+
+	Parameters:
+	- url (str): The URL to fetch content from.
+
+	Returns:
+	- dict: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		response = requests.get(url)
 		doc = pq(response.text)
@@ -305,11 +414,24 @@ def fetch_with_pyquery(url):
 # Browser automation methods
 @benchmark
 def fetch_with_selenium(url):
+	"""
+	Benchmark a function that fetches content from a URL using Selenium.
+
+	Parameters:
+	- url (str): The URL to fetch content from.
+
+	Returns:
+	- dict: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		options = webdriver.ChromeOptions()
+		options.add_argument("--no-sandbox")
+		options.add_argument("--disable-dev-shm-usage")
+		options.add_argument("--disable-gpu")
 		options.add_argument('--headless')
-		options.add_argument('--no-sandbox')
-		options.add_argument('--disable-gpu')
+		options.add_argument("--incognito")
+		options.add_argument("--log-level=3")
+		options.add_experimental_option("prefs", {"profile.default_content_settings.cookies": 2})
 		service = Service(ChromeDriverManager().install())
 		driver = webdriver.Chrome(service=service, options=options)
 		driver.get(url)
@@ -328,6 +450,15 @@ def fetch_with_selenium(url):
 
 @benchmark
 def fetch_with_mechanicalsoup(url):
+	"""
+	Fetches content from a given URL using MechanicalSoup's StatefulBrowser.
+
+	Parameters:
+	- url (str): The URL to fetch content from.
+
+	Returns:
+	- dict: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		browser = mechanicalsoup.StatefulBrowser()
 		response = browser.open(url)
@@ -344,11 +475,20 @@ def fetch_with_mechanicalsoup(url):
 
 @async_benchmark
 async def fetch_with_playwright(url):
+	"""
+	Benchmark a function that fetches content from a URL using Playwright.
+
+	Parameters:
+	- url (str): The URL to fetch content from.
+
+	Returns:
+	- dict: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		async with async_playwright() as p:
 			browser = await p.chromium.launch(
 				headless=True,
-				args=['--no-sandbox', '--disable-gpu']
+				args=['--no-sandbox', '--disable-gpu', '--incognito']
 			)
 			page = await browser.new_page()
 			await page.goto(url)
@@ -367,10 +507,19 @@ async def fetch_with_playwright(url):
 
 @async_benchmark
 async def fetch_with_pyppeteer(url):
+	"""
+	An asynchronous function that fetches content from a given URL using pyppeteer.
+	
+	Parameters:
+	- url (str): The URL to fetch content from.
+	
+	Returns:
+	- dict: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		browser = await launch(
 			headless=True,
-			args=['--no-sandbox', '--disable-gpu']
+			args=['--no-sandbox', '--disable-gpu', '--incognito']
 		)
 		page = await browser.newPage()
 		await page.goto(url)
@@ -389,6 +538,12 @@ async def fetch_with_pyppeteer(url):
 
 @async_benchmark
 async def fetch_with_crawlee(url):
+	"""
+	Asynchronously fetches the content of a given URL using the Crawlee library.
+
+	:param url: A string representing the URL to fetch.
+	:return: A dictionary containing the fetched content and its status code.
+	"""
 	try:
 		# Open a default request queue and add requests to it
 		rq = await RequestQueue.open()
@@ -433,6 +588,16 @@ async def fetch_with_crawlee(url):
 		}
 
 async def benchmark_scraping_tools(url):
+	"""
+	An asynchronous function that benchmarks various scraping tools by testing HTTP request methods, 
+ 	HTML parsing methods, and browser automation methods.
+
+	Parameters:
+	- url: The URL to be used for benchmarking.
+
+	Returns:
+	- A dictionary containing the benchmark results for different scraping tools.
+	"""
 	results = {}
 	print("\nTesting HTTP request methods...")
 	results['requests'] = fetch_with_requests(url)
@@ -452,7 +617,17 @@ async def benchmark_scraping_tools(url):
 	return results
 
 def rank_tools(results, key_metric, sort_order='asc'):
-	# Separate successful and failed methods
+	"""
+	Ranks the scraping tools based on the specified key metric and prints the rankings.
+
+	Parameters:
+	- results (dict): A dictionary containing the benchmark results for different scraping tools.
+	- key_metric (str): The metric to be used for ranking the tools.
+	- sort_order (str, optional): The order in which the tools should be sorted. Defaults to 'asc'.
+
+	Returns:
+	- rankings (list): A list of tuples containing the rank, tool name, and metrics for each tool.
+	"""
 	successful_methods = {k: v for k, v in results.items() if v['status'] == 'Successful'}
 	failed_methods = {k: v for k, v in results.items() if v['status'] == 'Failed'}
 
@@ -499,6 +674,15 @@ def rank_tools(results, key_metric, sort_order='asc'):
 	return rankings
 
 def main(urls, key_metric, sort_order='asc'):
+	"""
+	This function generates a scraping benchmark report by running the `benchmark_scraping_tools` function 
+ 	on a list of URLs and ranking the scraping tools based on a specified key metric.
+
+	Parameters:	
+	- `urls`: A list of URLs to scrape.
+	- `key_metric`: The key metric to rank the scraping tools based on.
+	- `sort_order`: The sort order of the rankings. Defaults to 'asc'.
+	"""
 	# Initialize an Excel writer
 	writer = pd.ExcelWriter('scraping_benchmark.xlsx', engine='xlsxwriter')
 
