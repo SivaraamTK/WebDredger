@@ -117,6 +117,7 @@ python scraper.py -u urls.txt -o results.txt -l -s random -a random -dir downloa
 - [ ] implement honeypot detection
 - [ ] implement AJAX or XHR-based detection
 - [ ] implement rate limiting detection
+- [ ] implelemnt screenshot to save results
 
 ### Phase 2 - Scraper Framework
 

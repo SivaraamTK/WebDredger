@@ -1,19 +1,43 @@
-#TODO: Save screenshots of failure requests
+"""
+Note:
+    This wil close all chrome instances, so do not use it when running the program
+"""
+
 import time
+import psutil
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support import expected_conditions as EC
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument('--headless')
+chrome_options.add_argument("--incognito")
 chrome_options.add_argument("--log-level=3")
+chrome_options.add_experimental_option("prefs", {"profile.default_content_settings.cookies": 2})
 
 chrome_service = Service(ChromeDriverManager().install())           
+
+# Hotfix to avoid CPU overload
+def terminate_zombie_processes():
+    """
+    Terminate zombie Chrome processes.
+    """
+    for proc in psutil.process_iter(['name', 'exe']):
+        try:
+            if 'chrome' in proc.info['name'].lower() or 'chrome' in proc.info['exe'].lower():
+                proc.terminate()
+                print(f"Terminated zombie Chrome process: {proc.info['name']}")
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+        except Exception:
+            pass
 
 def check_auth_wall(url):
     """
@@ -33,75 +57,69 @@ def check_auth_wall(url):
     # Keywords that indicate a login form
     form_keywords = ['username', 'email', 'phone', 'password', 'userid']
 
-    # Keywords that indicate page loaded successfully
-    # content_keywords = ['linkedin', 'jman', 'data']
+    # Tags to check in the HTML
+    tags_to_check = ['script', 'iframe', 'input', 'embed', 'form']
 
     flag = False
 
     try:
-        driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-        driver.get(url)
-        driver.implicitly_wait(10)
+        with webdriver.Chrome(service=chrome_service, options=chrome_options) as driver:
+            driver.get(url)
+            driver.implicitly_wait(10)
+            WebDriverWait(driver, 10).until(lambda d: d.execute_script('return document.readyState') == 'complete')
+            time.sleep(2)
 
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-        # Check if all content keywords are present in the response text
-        # if all(keyword in soup.text.lower() for keyword in content_keywords):
-        #     return False
-
-        # Check if redirected to a login page
-        current_url = driver.current_url
-        for keyword in auth_keywords:
-            if keyword in current_url.lower():
-                flag = True
-                break
-
-        # Check for login forms in the HTML
-        forms = soup.find_all('form')
-        for form in forms:
+            # Check if redirected to a login page
+            current_url = driver.current_url
             for keyword in auth_keywords:
-                for attr in form.attrs.values():
-                    if keyword in str(attr).lower():
-                        flag = True
-                        break
+                if keyword in current_url.lower():
+                    flag = True
+                    print(f"Auth keyword{keyword} found on URL link: {url}")
+                    break
 
-        # Check for input fields indicating a login form
-        inputs = soup.find_all('input')
-        for input in inputs:
-            for keyword in form_keywords:
-                for attr in input.attrs.values():
-                    if keyword in str(attr).lower():
-                        flag = True
+            # Check for login forms in the HTML
+            if not flag:
+                for keyword in auth_keywords:
+                    for tag in tags_to_check:
+                        elements = soup.find_all(tag)
+                        for element in elements:
+                            for attr_value in element.attrs.values():
+                                if keyword in str(attr_value).lower():
+                                    print(f"Auth keyword{keyword} found at {element} on URL: {url}")
+                                    flag = True
+                                    break    
+                            if flag:
+                                break
+                        if flag:
+                            break
+                    if flag:
                         break
-
-        # Check for iframes indicating a login form
-        iframes = soup.find_all('iframe')
-        for iframe in iframes:
-            for keyword in auth_keywords:
-                for attr in iframe.attrs.values():
-                    if keyword in str(attr).lower():
-                        flag = True
+                            
+            # Check for input fields indicating a login form
+            if not flag:
+                inputs = soup.find_all('input')
+                for input in inputs:
+                    for keyword in form_keywords:
+                        for attr in input.attrs.values():
+                            if keyword in str(attr).lower():
+                                print(f"Form keyword{keyword} found at {input} on URL: {url}")
+                                flag = True
+                                break
+                        if flag:
+                            break
+                    if flag:
                         break
-
-        # Check for embedded login forms
-        embeds = soup.find_all('embed')
-        for embed in embeds:
-            for keyword in auth_keywords:
-                for attr in embed.attrs.values():
-                    if keyword in str(attr).lower():
-                        flag = True
-                        break
-
-        driver.quit()
+                    
         if flag:
-            print(f"Auth wall detected on {url}")
+            print(f"{url} proably has an auth wall")
         else:
-            print(f"No Auth wall detected on {url}")
+            print(f"{url} probably doesn't have an auth wall")
 
     except Exception as e:
         print(f"Error checking URL: {e}")
-        return True
-    
+        
     finally:
         try:
             driver.quit()
@@ -130,44 +148,57 @@ def check_captcha_service(url):
     flag = False
 
     try:
-        driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-        driver.get(url)
-        driver.implicitly_wait(10)
+        with webdriver.Chrome(service=chrome_service, options=chrome_options) as driver:
+            driver.get(url)
+            driver.implicitly_wait(10)
+            WebDriverWait(driver, 10).until(lambda d: d.execute_script('return document.readyState') == 'complete')
+            time.sleep(2)
 
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-        for keyword in captcha_keywords:
-            for tag in tags_to_check:
-                elements = soup.find_all(tag)
-                for element in elements:
-                    for attr_value in element.attrs.values():
-                        if keyword in str(attr_value).lower():
+            for keyword in captcha_keywords:
+                for tag in tags_to_check:
+                    elements = soup.find_all(tag)
+                    for element in elements:
+                        for attr_value in element.attrs.values():
+                            if keyword in str(attr_value).lower():
+                                print(f"Captcha keyword{keyword} found at {element} on URL: {url}")
+                                flag = True
+                                break
+                        if flag:
+                            break
+                    if flag:
+                        break
+                if flag:
+                    break
+                
+            if not flag:                                    
+                captcha_anchor = soup.find_all('div')
+                for anchor in captcha_anchor:
+                    for keyword in captcha_keywords:
+                        if keyword in ' '.join(anchor.get('class', [])).lower():
+                            print(f"Captcha keyword{keyword} found at {anchor} on URL: {url}")
                             flag = True
                             break
-
-        captcha_anchor = soup.find_all('div')
-        for anchor in captcha_anchor:
-            for keyword in captcha_keywords:
-                if keyword in ' '.join(anchor.get('class', [])).lower():
-                    flag = True
-                    break
-                elif keyword in anchor.get('name', '').lower():
-                    flag = True
-                    break
-                elif keyword in anchor.get('id', '').lower():
-                    flag = True
-                    break
+                        elif keyword in anchor.get('name', '').lower():
+                            print(f"Captcha keyword{keyword} found at {anchor} on URL: {url}")
+                            flag = True
+                            break
+                        elif keyword in anchor.get('id', '').lower():
+                            print(f"Captcha keyword{keyword} found at {anchor} on URL: {url}")
+                            flag = True
+                            break
+                    if flag:
+                        break
         
-        driver.quit()
         if flag:
-            print(f"Captcha service detected on {url}")
+            print(f"{url} proably has a captcha service")
         else:
-            print(f"No Captcha service detected on {url}")
+            print(f"{url} probably doesn't have a captcha service")
 
     except Exception as e:
         print(f"Error checking {url}: {e}")
-        return True
-    
+        
     finally:
         try:
             driver.quit()
@@ -220,12 +251,11 @@ def check_location_based_access(url):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument('--headless')
+    options.add_argument("--incognito")
     options.add_argument("--log-level=3")
-    chrome_options.add_experimental_option("prefs", {
+    options.add_experimental_option("prefs", {
         "profile.default_content_setting_values.geolocation": 1,
     })
-
-    driver = webdriver.Chrome(service=chrome_service, options=options)
 
     for country, coords in locations.items():
         try:
@@ -233,36 +263,37 @@ def check_location_based_access(url):
             
             flag = False
             
-            driver.execute_cdp_cmd("Emulation.setGeolocationOverride", coords)
-            driver.get(url)
-            driver.implicitly_wait(10)
-            
-            soup = BeautifulSoup(driver.page_source, 'html.parser')
-                        
-            if not soup.text:
-                print("No text found")
-                flag = True
-            for tag in tags_to_check:
-                elements = soup.find_all(tag)
-                for element in elements:
-                    if any(keyword in element.text.lower() for keyword in blocker_keywords):
-                        flag = True
-                        print(f"Blocking keyword found in {tag} text")
+            with webdriver.Chrome(service=chrome_service, options=chrome_options) as driver:
+                driver.execute_cdp_cmd("Emulation.setGeolocationOverride", coords)
+                driver.get(url)
+                driver.implicitly_wait(10)
+                WebDriverWait(driver, 10).until(lambda d: d.execute_script('return document.readyState') == 'complete')
+                time.sleep(2)
+                
+                soup = BeautifulSoup(driver.page_source, 'html.parser')
+                            
+                if not soup.text:
+                    print("No text found")
+                    flag = True
+                for tag in tags_to_check:
+                    elements = soup.find_all(tag)
+                    for element in elements:
+                        if any(keyword in element.text.lower() for keyword in blocker_keywords):
+                            flag = True
+                            print(f"Blocking keyword found in {tag} text")
+                            break
+                        if any(keyword in str(attr).lower() for attr in element.attrs.values() for keyword in blocker_keywords):
+                            flag = True
+                            print(f"Blocking keyword found in {tag} attributes")
+                            break
+                    if flag:
                         break
-                    if any(keyword in str(attr).lower() for attr in element.attrs.values() for keyword in blocker_keywords):
-                        flag = True
-                        print(f"Blocking keyword found in {tag} attributes")
-                        break
-                if flag:
-                    break
-
-            driver.quit()
             
+            locations[country]['blocked'] = flag
             if not flag:
-                locations[country]['blocked'] = False
                 print(f"URL {url} did not block requests from {country}")
             else:
-                locations[country]['blocked'] = True
+                print(f"URL {url} blocked requests from {country}")
             time.sleep(2)
             
         except Exception as e:
@@ -272,10 +303,12 @@ def check_location_based_access(url):
                 driver.quit()
             except:
                 pass
-            if flag:
-                print(f"URL {url} blocked requests from {country}")
-            else:
-                print(f"URL {url} did not block requests from {country}")
+    
+    try:
+        driver.quit()
+    except:
+        pass
+    
     
     print('Results:', locations)
           
@@ -294,56 +327,56 @@ def check_request_blocking(url, max_attempts=10):
     flag = False
     blocker_keywords = [
         'blocked', 'unavailable', 'restricted', 'denied', 'forbidden',
-        '403', '404', '500', '502', '503', '429',
+        '403', '404', '500', '502', '503', '429', 'unsupported'
         '504', 'error', 'not found', 'unauthorized', 'unavailable',
     ]
     tags_to_check = ['title', 'h1', 'h2', 'h3', 'iframe', 'embed']
-    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-    driver.implicitly_wait(10)
-
-    try:
-        for curr_attempt in range(1, max_attempts + 1):
-            driver.execute_script(f"window.open('about:blank', 'tab{curr_attempt}');")
-            driver.switch_to.window(f'tab{curr_attempt}')
-            driver.get(url)
-            driver.implicitly_wait(10)
-            soup = BeautifulSoup(driver.page_source, 'html.parser')
-            driver.close()
-            driver.switch_to.window(driver.window_handles[0])
-            if not soup.text:
-                print("No text found")
-                continue
-            for tag in tags_to_check:
-                elements = soup.find_all(tag)
-                for element in elements:
-                    if any(keyword in element.text.lower() for keyword in blocker_keywords):
-                        flag = True
-                        print(f"Blocking keyword found in {tag} text")
-                        break
-                    if any(keyword in str(attr).lower() for attr in element.attrs.values() for keyword in blocker_keywords):
-                        flag = True
-                        print(f"Blocking keyword found in {tag} attributes")
-                        break
-                if flag:
-                    break
-            if not flag:
-                success_count += 1
-                print(f"URL {url} did not block requests on attempt {curr_attempt}, Total successes: {success_count}.")
-            else:
-                break
-            time.sleep(2)
-    except Exception as e:
-        print(f"Error checking {url} for blocking: {e}")
-    finally:
+    with webdriver.Chrome(service=chrome_service, options=chrome_options) as driver:    
         try:
-            driver.quit()
-        except:
-            pass
-        if flag:
-            print(f"URL {url} blocked requests after {curr_attempt} attempts, Total successes: {success_count}.")
-        else:
-            print(f"URL {url} did not block requests till max attempts {max_attempts}, Total successes: {success_count}.")
-            
+            for curr_attempt in range(1, max_attempts + 1):
+                driver.execute_script(f"window.open('about:blank', 'tab{curr_attempt}');")
+                driver.switch_to.window(f'tab{curr_attempt}')
+                driver.get(url)
+                driver.implicitly_wait(10)
+                WebDriverWait(driver, 10).until(lambda d: d.execute_script('return document.readyState') == 'complete')
+                time.sleep(2)
+                soup = BeautifulSoup(driver.page_source, 'html.parser')
+                driver.close()
+                driver.switch_to.window(driver.window_handles[0])
+                if not soup.text:
+                    print("No text found")
+                    continue
+                for tag in tags_to_check:
+                    elements = soup.find_all(tag)
+                    for element in elements:
+                        if any(keyword in element.text.lower() for keyword in blocker_keywords):
+                            flag = True
+                            print(f"Blocking keyword found in {tag} text")
+                            break
+                        if any(keyword in str(attr).lower() for attr in element.attrs.values() for keyword in blocker_keywords):
+                            flag = True
+                            print(f"Blocking keyword found in {tag} attributes")
+                            break
+                    if flag:
+                        break
+                if not flag:
+                    success_count += 1
+                    print(f"URL {url} did not block requests on attempt {curr_attempt}, Total successes: {success_count}.")
+                else:
+                    break
+                time.sleep(2)
+        except Exception as e:
+            print(f"Error checking {url} for blocking: {e}")
+        finally:
+            if flag:
+                print(f"URL {url} blocked requests after {curr_attempt} attempts, Total successes: {success_count}.")
+            else:
+                print(f"URL {url} did not block requests till max attempts {max_attempts}, Total successes: {success_count}.")
+    try:
+        driver.quit()
+    except:
+        pass
+                
 def check_headless_detection(url):
     """
     Checks if a given URL blocks headless browsers, normal browsers, or both.
@@ -357,35 +390,80 @@ def check_headless_detection(url):
     flag_normal = False
     flag_headless = False
     
+    blocker_keywords = [
+        'blocked', 'unavailable', 'restricted', 'denied', 'forbidden',
+        '403', '404', '500', '502', '503', '429',
+        '504', 'error', 'not found', 'unauthorized', 'unavailable',
+    ]
+    tags_to_check = ['title', 'h1', 'h2', 'h3', 'iframe', 'embed']
+    
     options = webdriver.ChromeOptions()
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
+    options.add_argument("--incognito")
     options.add_argument("--log-level=3")
     
-    driver = webdriver.Chrome(service=chrome_service, options=options)
-    driver.get(url)
-    time.sleep(2)
-
     try:
-        element = driver.find_element(By.TAG_NAME, "body")
-        if element:
-            print(f"Normal browser, Page title: {driver.title}")
-            flag_normal = True
+        with webdriver.Chrome(service=chrome_service, options=chrome_options) as driver:
+            driver.get(url)
+            driver.implicitly_wait(10)
+            WebDriverWait(driver, 10).until(lambda d: d.execute_script('return document.readyState') == 'complete')
+            time.sleep(2)
+
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+                            
+            if not soup.text:
+                print("No text found")
+                flag_normal = True
+            for tag in tags_to_check:
+                elements = soup.find_all(tag)
+                for element in elements:
+                    if any(keyword in element.text.lower() for keyword in blocker_keywords):
+                        flag_normal = True
+                        print(f"Blocking keyword found in {tag} text for normal browser")
+                        break
+                    if any(keyword in str(attr).lower() for attr in element.attrs.values() for keyword in blocker_keywords):
+                        flag_normal = True
+                        print(f"Blocking keyword found in {tag} attributes for normal browser")
+                        break
+                if flag_normal:
+                    break
+
     except Exception as e:
         print(f"Normal browser, Error: {e}")
     finally:
-        driver.quit()
+        try:
+            driver.quit()
+        except:
+            pass
     
-    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-    driver.get(url)
-    time.sleep(2)
-
     try:
-        element = driver.find_element(By.TAG_NAME, "body")
-        if element:
-            print(f"Normal browser, Page title: {driver.title}")
-            flag_headless = True
+        with webdriver.Chrome(service=chrome_service, options=chrome_options) as driver:
+            driver.get(url)
+            driver.implicitly_wait(10)
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+            time.sleep(2)
+
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+                            
+            if not soup.text:
+                print("No text found")
+                flag_headless = True
+            for tag in tags_to_check:
+                elements = soup.find_all(tag)
+                for element in elements:
+                    if any(keyword in element.text.lower() for keyword in blocker_keywords):
+                        flag_headless = True
+                        print(f"Blocking keyword found in {tag} text for headless browser")
+                        break
+                    if any(keyword in str(attr).lower() for attr in element.attrs.values() for keyword in blocker_keywords):
+                        flag_headless = True
+                        print(f"Blocking keyword found in {tag} attributes for headless browser")
+                        break
+                if flag_headless:
+                    break
+
     except Exception as e:
         print(f"Normal browser, Error: {e}")
     finally:
@@ -404,23 +482,25 @@ def check_headless_detection(url):
         print("The URL is accessible by both normal and headless browsers.")
 
 if __name__ == '__main__':
-    url = 'https://www.google.com'
     urls_to_check = [
         # 'https://linkedin.com', 
         # 'https://google.com',
-        # 'https://www.youtube.com',
+        'https://www.youtube.com',
         # 'https://www.amazon.com',
-        'https://www.crackle.com/'
         ]
     for url in urls_to_check:
         print(f"Checking URL: {url}")
         
         check_auth_wall(url)
-        
+
         check_captcha_service(url)
-        
+
         check_headless_detection(url)
+        terminate_zombie_processes()
         
         check_request_blocking(url)
-        
+        terminate_zombie_processes()
+       
         check_location_based_access(url)
+        terminate_zombie_processes()
+        
