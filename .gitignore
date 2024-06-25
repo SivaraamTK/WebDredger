@@ -167,10 +167,7 @@ cython_debug/
 /tasks
 /local_storage.json
 /profiles.json
-/lenskart-scraped-data
-/amazon-scrape-data
-/aztecca-scraped-data
-/flipkart-scrape-data
+*data
 /results.*
 /urls.txt
 /timesofindia-scrape-data
@@ -182,3 +179,5 @@ cython_debug/
 /storage
 /selenium-logs
 /playwright-logs
+*log
+*.xlsx

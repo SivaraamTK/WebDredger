@@ -25,7 +25,7 @@ playwright install
 ```
 2. (Optional) Install browser specific dependencies using the following command:
 ```bash
-playwright install chromium
+playwright install webkit
 ```
 
 ### Rotating Proxy Setup
@@ -34,7 +34,7 @@ playwright install chromium
 ## Outputs
 The project generates the following outputs:
 
-- `results.txt`: Contains all the URLs from which the data was collected and the data collected
+- `results.html`: Contains all the URLs from which the data was collected and the data collected
 - `downloads`: Contains the downloaded files from the URLs, organized by the domain name
 
 ## Options
@@ -79,7 +79,7 @@ Usage: `-x http://http://127.0.0.1:8080` or `--proxy = http://127.0.0.1:8080`
 Usage: `-dir downloads` or `--directory = downloads`.
 
 - `out`: Output file containing crawled links.  
-Usage: `-o results.txt` or `--out = results.txt`.
+Usage: `-o results` or `--out = results`.
 
 ## Usage
 ### Basic Usage
@@ -88,24 +88,13 @@ To run the project, follow the steps mentioned below:
 1. Create a file named `urls.txt` and add the URLs from which the data needs to be collected or mention the URL directly in the command for ```-u``` or ```--urls``` option
 2. Run the following command to start the project:
 ```bash
-python scraper.py -u urls.txt -o results.txt
+python scraper.py -u urls.txt -o results
 ```
 
 ### Using Playwright
 To use Playwright to get data from the URLs, use the `-p` or `--playwright` option with the command:
 ```bash
-python scraper.py -u urls.txt -o results.txt --playwright
-```
-
-### Using Proxy
-To use proxy server, use the `-x` or `--proxy` option with the command after starting the rotating proxy container:
-```bash
-python scraper.py -u urls.txt -o results.txt -x  http://127.0.0.1:3128
-```
-
-### Recommended Usage
-```bash
-python scraper.py -u urls.txt -o results.txt -l -s random -a random -dir downloads -r 1 -cr 5 -crd 10 -at 0.5 -x http://127.0.0.1:3128 -p
+python scraper.py -u urls.txt -o results --playwright
 ```
 
 ## TODO

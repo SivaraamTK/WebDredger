@@ -24,11 +24,12 @@ reference:
 
 # Import the required modules
 import os
+import re
 from collections import defaultdict
 from argparse import ArgumentParser
 from datetime import datetime
 from jsbeautifier import beautify
-from random import randint
+from random import choice
 from sys import argv
 from tldextract import extract
 from urllib.parse import urlparse, urlsplit, quote
@@ -42,19 +43,17 @@ from scrapy.utils.project import get_project_settings
 
 # ----------------------------------------
 # Define the Utility functions
-def parse_float(value: float):
+def parse_float(value: float) -> float | None:
 	'''
 	This function is used to parse a float value.
 
 	:param value: The value to be parsed.
 	:return: The parsed value or None.
 	'''
-	tmp = None
 	try:
-		tmp = float(value)
+		return float(value)
 	except ValueError:
-		pass
-	return tmp
+		return None
 
 def validate_domains(values: list[str] | str):
 	'''
@@ -83,26 +82,17 @@ def unique(sequence: list):
 	:param sequence: The list from which duplicates are to be removed.
 	:return: The list without duplicates.
 	'''
-	if sequence is not list:
-		sequence = list(sequence)
-	seen = set()
-	return [x for x in sequence if not (x in seen or seen.add(x))]
+	return list(dict.fromkeys(sequence))
 
 def read_file(file: str):
 	'''
-	This function is used to read a file
-	line by line and return the data as a list.
+	This function is used to read a file line by line and return the data as a list.
 
 	:param file: The name of the file to be read.
 	:return: The data from the file as a list.
 	'''
-	tmp = []
 	with open(file, "r", encoding=DEFAULT_ENCODING) as stream:
-		for line in stream:
-			line = line.strip()
-			if line:
-				tmp.append(line)
-	return unique(tmp)
+		return unique(line.strip() for line in stream if line.strip())
 
 def get_all_user_agents(file:str="user_agents.txt"):
 	'''
@@ -112,14 +102,11 @@ def get_all_user_agents(file:str="user_agents.txt"):
 				by default, it is set to "user_agents.txt".
 	:return: The user agents as a list.
 	'''
-	array = []
-	if os.path.isfile(file) and os.access(file, os.R_OK) and os.stat(file).st_size > 0:
+	try:
 		with open(file, "r", encoding=DEFAULT_ENCODING) as stream:
-			for line in stream:
-				line = line.strip()
-				if line:
-					array.append(line)
-	return array if array else [DEFAULT_USER_AGENT]
+			return [line.strip() for line in stream if line.strip()] or [DEFAULT_USER_AGENT]
+	except FileNotFoundError:
+		return [DEFAULT_USER_AGENT]
 
 def get_random_user_agent():
 	'''
@@ -127,8 +114,8 @@ def get_random_user_agent():
 
 	:return: A random user agent.
 	'''
-	array = get_all_user_agents(USER_AGENT_FILE)
-	return array[randint(0, len(array) - 1)]
+	with open(USER_AGENT_FILE, "r", encoding=DEFAULT_ENCODING) as stream:
+		return choice(stream.read().splitlines())
 
 # ----------------------------------------
 # Define the constants
@@ -333,13 +320,31 @@ class ScrapyScraperSpider(Spider):
 		for url, file_path in self.__downloaded.items():
 			parsed_url = urlparse(url)
 			domain = parsed_url.netloc
-			path_parts = parsed_url.path.strip("/").split("/")
+			path = parsed_url.path.strip("/")
+			path_parts = path.split('/')
 			current_level = results["downloaded_files"][domain]
 
-			for part in path_parts[:-1]:
+			for part in path_parts:
+				if part not in current_level:
+					current_level[part] = {}
 				current_level = current_level[part]
-			filename = path_parts[-1]
-			current_level["files"].append((filename, file_path))
+
+			filename = os.path.basename(file_path)
+			if "files" not in current_level:
+				current_level["files"] = []
+			if filename not in current_level["files_set"]:
+				current_level["files"].append((filename, file_path))
+				current_level["files_set"].add(filename)
+	
+		def remove_sets(d):
+			if "files_set" in d:
+				del d["files_set"]
+			for key in d:
+				if isinstance(d[key], dict):
+					remove_sets(d[key])
+
+		remove_sets(results["downloaded_files"])
+
 
 		# Render the HTML template
 		env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
@@ -347,7 +352,7 @@ class ScrapyScraperSpider(Spider):
 		html = template.render(results=results)
 
 		# Save the HTML file
-		with open(self.__out, "w", encoding="utf-8") as f:
+		with open(self.__out+'.html', "w", encoding="utf-8") as f:
 			f.write(html)
 		print(f"Report generated: {self.__out}")
 
@@ -355,18 +360,14 @@ class ScrapyScraperSpider(Spider):
 		'''
 		This method is used to print the normalized start URLs.
 		'''
-		print("Normalized start URLs:")
-		for url in self.start_urls:
-			print(url)
+		print("Normalized start URLs:\n" + "\n".join(self.start_urls))
 
 	def __print_allowed_domains(self):
 		'''
 		This method is used to print the allowed domains.
 		'''
 		if self.allowed_domains:
-			print("Allowed domains/subdomains:")
-			for domain in self.allowed_domains:
-				print("*." + domain)
+			print("Allowed domains/subdomains:\n*.".join(self.allowed_domains))
 		else:
 			print("Domain whitelisting is off!")
 
@@ -404,10 +405,9 @@ class ScrapyScraperSpider(Spider):
 
 		:return: The meta data to be used by the spider in JSON format.
 		'''
-		tmp = self.__get_playwright_meta() if self.__playwright else {
-			"proxy": self.__proxy}
-		tmp["cookiejar"] = '1'
-		tmp["dont_merge_cookies"] = 'True'
+		tmp = {"proxy": self.__proxy, "cookiejar": '1', "dont_merge_cookies": 'True'}
+		if self.__playwright:
+			tmp.update(self.__get_playwright_meta())
 		return tmp
 
 	def __get_playwright_meta(self):
@@ -418,37 +418,43 @@ class ScrapyScraperSpider(Spider):
 		:return: The meta data to for playwright in JSON format.
 		'''
 		self.__context += 1
-		tmp = {
+		context_kwargs = {
+			"java_script_enabled": self.__javascript_enabled,
+			"accept_downloads": self.__accept_downloads,
+			"bypass_csp": self.__bypass_csp,
+			"ignore_https_errors": self.__ignore_https_errors,
+			"user_agent": self.__user_agent,
+			"viewport": {"width": 1920, "height": 1080},
+		}
+		return {
 			"playwright": True,
 			"playwright_context": str(self.__context),
-			"playwright_context_kwargs": {
-				"java_script_enabled": self.__javascript_enabled,
-				"accept_downloads": self.__accept_downloads,
-				"bypass_csp": self.__bypass_csp,
-				"ignore_https_errors": self.__ignore_https_errors,
-				"user_agent": self.__user_agent,
-				"viewport": {"width": 1920, "height": 1080},
-			},
+			"playwright_context_kwargs": context_kwargs,
 			"playwright_include_page": True,
 			"playwright_page_goto_kwargs": {
 				"wait_until": "load",
 				"timeout": self.__timeout * 1000
 			}
 		}
-		return tmp
 
 	async def __exception(self, failure):
 		'''
-		`This method is used to handle exceptions
+		This method is used to handle exceptions
 		during the crawling and scraping process.
 
 		:param failure: The exception that occurred.
 		'''
-		print("Error: "+str(failure.value))
-		if self.__playwright and "playwright_page" in failure.request.meta:
-			page = failure.request.meta["playwright_page"]
-			await page.close()
-			await page.context.close()
+		try:
+			print("Error:", str(failure.value))
+			if self.__playwright and "playwright_page" in failure.request.meta:
+				page = failure.request.meta["playwright_page"]
+				if page:
+					try:
+						await page.context.close()
+					except:
+						pass
+		except:
+			pass
 
 	def __download_file(self, url:str, referer:str=""):
 		'''
@@ -529,41 +535,46 @@ class ScrapyScraperSpider(Spider):
 		'''
 		This method is used to get the file path
 		where the downloaded assets will be saved.
-	
+
 		:param url: The URL of the asset.
 		:param content_type: The content type of the asset.
 		:return: The file path where the asset will be saved.
 		'''
 		parsed_url = urlparse(url)
-	
+
 		# Extract the domain without the TLD
 		extracted = extract(parsed_url.netloc)
 		domain_without_tld = quote(extracted.domain)
-	
+
 		# Include the path and query in the file name
 		path = parsed_url.path
 		if path.endswith('/'):
 			path = path[:-1]
 		if path.startswith('/'):
 			path = path[1:]
-		path = quote(path)
 
 		# If the path is empty, use the domain name as the filename
 		if not path:
 			path = domain_without_tld
 
 		# If the path has a file extension, remove it
-		path, _ = os.path.splitext(path)	
-	
+		path, _ = os.path.splitext(path)
+
 		# Create directories for each part of the path
-		full_path = os.path.join(self.__directory, domain_without_tld, path)
+		path_parts = path.split('/')
+  
+		# Replace unsupported characters with underscore
+		path = re.sub(r'[^a-zA-Z0-9_/]', '_', path)
+		path = re.sub(r'__+', '_', path)
+
+		# Create the full path
+		full_path = os.path.join(self.__directory, domain_without_tld, *path_parts)
 		os.makedirs(os.path.dirname(full_path), exist_ok=True)
-	
+
 		# Append the file extension to the full path
 		full_path += self.__get_extension(content_type)
-	
-		return full_path
 
+		return full_path
 	def __get_extension(self, content_type:str):
 		'''
 		This method is used to get the file extension
@@ -848,7 +859,7 @@ class ScrapyScraper:
 		self.__max_redirects = 10
 		self.__robots_obey = False
 		self.__headless_browser = True
-		self.__browser_type = "chromium"  # playwright's headless browser
+		self.__browser_type = "webkit"  # supports chromium, firefox, webkit
 
 	def run(self):
 		'''
@@ -893,9 +904,9 @@ class ScrapyScraper:
 		settings["TELNETCONSOLE_PORT"] = None
 
 		# deltafetch middleware used to avoid duplicate requests
-		# settings["SPIDER_MIDDLEWARES"]["scrapy_deltafetch.DeltaFetch"] = 100
-		# settings["DELTAFETCH_ENABLED"] = True
-		# settings["DELTAFETCH_RESET"] = 1
+		settings["SPIDER_MIDDLEWARES"]["scrapy_deltafetch.DeltaFetch"] = 100
+		settings["DELTAFETCH_ENABLED"] = True
+		settings["DELTAFETCH_RESET"] = 1
 		
 		# Enable FilesPipeline and ImagesPipeline
 		settings["ITEM_PIPELINES"] = {
@@ -912,7 +923,7 @@ class ScrapyScraper:
 		# logging options
 		settings["LOG_ENABLED"] = True
 		settings["LOG_LEVEL"] = "DEBUG"
-		settings["LOG_FILE"] = "webdredger.log"
+		settings["LOG_FILE"] = f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-webdredger.log"
 		settings["LOG_FORMAT"] = "%(asctime)s | [%(name)s] | %(levelname)s: %(message)s"
 		settings["LOG_DATEFORMAT"] = "%Y-%m-%d | %H:%M:%S"
 		settings["LOG_STDOUT"] = True

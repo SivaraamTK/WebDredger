@@ -3,8 +3,12 @@ Note:
     This wil close all chrome instances, so do not use it when running the program
 """
 
+import re
 import time
+import json
+from urllib.parse import urlparse
 import psutil
+import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -18,12 +22,18 @@ chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument('--headless')
-chrome_options.add_argument("start-maximized")
 chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--log-level=3")
-chrome_options.add_experimental_option("prefs", {"profile.default_content_settings.cookies": 2})
+chrome_options.add_argument("--log-level=3") # used to reduce the console output
+chrome_options.add_experimental_option("prefs", {"profile.default_content_settings.cookies": 2}) # used to block cookies
 
 chrome_service = Service(ChromeDriverManager().install())           
+
+def sanitize_filename(filename):
+	"""Sanitize the filename by replacing invalid characters with `_` ."""
+	filename = filename.replace('www.','').replace('https://','').replace('http://','').replace('.com','')
+	filename = re.sub(r'[^a-zA-Z0-9_]', '_', filename)
+	filename = re.sub(r'__+', '_', filename)
+	return filename.rstrip('_')
 
 # Hotfix to avoid CPU overload
 def terminate_zombie_processes():
@@ -34,7 +44,7 @@ def terminate_zombie_processes():
         try:
             if 'chrome' in proc.info['name'].lower() or 'chrome' in proc.info['exe'].lower():
                 proc.terminate()
-                print(f"Terminated zombie Chrome process: {proc.info['name']}")
+                print(f"Terminated process: {proc.info['name']}")
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
         except Exception:
@@ -48,13 +58,14 @@ def check_auth_wall(url):
         url (str): The URL to check.
 
     Returns:
-        None
+        flag (bool): True if the URL is behind an authentication wall, False otherwise.
     """
     auth_keywords = {keyword.lower() for keyword in ['login', 'signin', 'auth', 'register', 'signup', 
                                                     'sign in', 'sign up', 'log in', 'join us', 
                                                     'log-in', 'sign-in', 'sign-up', 'join-us']}
     form_keywords = {keyword.lower() for keyword in ['username', 'email', 'phone', 'password', 'userid']}
     tags_to_check = ['script', 'iframe', 'input', 'embed', 'form']
+    flag = False
 
     try:
         with webdriver.Chrome(service=chrome_service, options=chrome_options) as driver:
@@ -68,30 +79,38 @@ def check_auth_wall(url):
             current_url = driver.current_url.lower()
             if any(keyword in current_url for keyword in auth_keywords):
                 print(f"Auth keyword found on URL link: {url}")
-                return
+                flag = True
 
             for keyword in auth_keywords:
+                if flag:
+                    break
                 if any(tag in soup.find_all(attrs={'*': keyword}) for tag in tags_to_check):
                     print(f"Auth keyword{keyword} found on URL: {url}")
-                    return
+                    flag = True
 
             inputs = soup.find_all('input')
             for input in inputs:
+                if flag:
+                    break
                 for keyword in form_keywords:
                     if any(keyword in str(attr).lower() for attr in input.attrs.values()):
                         print(f"Form keyword{keyword} found on URL: {url}")
-                        return
+                        flag = True
 
-        print(f"{url} probably doesn't have an auth wall")
-
+        driver.quit()
+        if not flag:
+            print(f"{url} probably doesn't have an auth wall")
+        
     except Exception as e:
         print(f"Error checking URL: {e}")
+        flag = True
        
     finally:
         try:
             driver.quit()
         except:
             pass
+        return flag
 
 def check_captcha_service(url):
     """
@@ -101,48 +120,60 @@ def check_captcha_service(url):
         url (str): The URL to check for captcha service.
 
     Returns:
-        None
+        flag (bool): True if the URL is using a captcha service, False otherwise.
     """
-    captcha_keywords = set(keyword.lower() for keyword in [
-        'captcha', 'recaptcha', 'hcaptcha', 'securimage', 
-        'distil-captcha', 'turnstile', 'geetest', 'keycaptcha',
-        'lemin', 'textcaptcha', 'text-captcha', 'funcaptcha',
-        'rotatecaptcha', 'clickcaptcha', 'asirra', 'ghostcaptcha',
-        'mtcaptcha','solvemedia', 'bot-check', 'human-verification', 
-        'anti-spam', 'anti-bot', 'image-captcha', 'audio-captcha'
+    captcha_keywords = set([
+        'captcha', 'recaptcha', 'hcaptcha', 'securimage', 'distil-captcha', 'turnstile', 'geetest', 'keycaptcha',
+        'lemin', 'textcaptcha', 'text-captcha', 'funcaptcha', 'rotatecaptcha', 'clickcaptcha', 'asirra', 'ghostcaptcha',
+        'mtcaptcha', 'solvemedia', 'bot-check', 'human-verification', 'anti-spam', 'anti-bot', 'image-captcha', 'audio-captcha'
     ])
-    
+    captcha_phrases = set([
+        'enter the characters', 'type the characters you see in this image:', 'type characters', 'prove you are human',
+        'verification', 'security check'
+    ])
     tags_to_check = ['script', 'iframe', 'input', 'embed', 'form', 'div']
+    
+    flag = False
 
     try:
         with webdriver.Chrome(service=chrome_service, options=chrome_options) as driver:
             driver.get(url)
             driver.implicitly_wait(10)
             WebDriverWait(driver, 10).until(lambda d: d.execute_script('return document.readyState') == 'complete')
-            time.sleep(2)
+            time.sleep(3)
 
             soup = BeautifulSoup(driver.page_source, 'html.parser')
 
             for tag in tags_to_check:
+                if flag:
+                    break
                 elements = soup.find_all(tag)
                 for element in elements:
+                    if flag:
+                        break
                     if any(keyword in str(attr_value).lower() for attr_value in element.attrs.values() for keyword in captcha_keywords):
                         print(f"Captcha keyword found at {element} on URL: {url}")
-                        return
+                        flag = True
+                        break
                     if tag == 'div' and any(keyword in ' '.join(element.get('class', [])).lower() for keyword in captcha_keywords):
                         print(f"Captcha keyword found at {element} on URL: {url}")
-                        return
+                        flag = True
+                        break
 
-            print(f"{url} probably doesn't have a captcha service")
+            driver.quit()
+            if not flag:
+                print(f"{url} probably doesn't have a captcha service")
 
     except Exception as e:
         print(f"Error checking {url}: {e}")
+        flag = True
         
     finally:
         try:
             driver.quit()
         except:
             pass
+        return flag
 
 #NOTE: Better to use proxy/vpn to spoof location as sites use IP address to determine location
 def check_location_based_access(url):
@@ -154,7 +185,7 @@ def check_location_based_access(url):
         url (str): The URL to check for accessibility.
     
     Returns:
-        None
+        locations (dict): A dictionary of country codes, their corresponding latitude and longitude and if they were blocked
     """
     blocker_keywords = [
         'blocked', 'unavailable', 'restricted', 'denied', 'forbidden',
@@ -184,6 +215,8 @@ def check_location_based_access(url):
        # 'Sudan': {'latitude': 12.86280000, 'longitude': 30.21760000},
        # 'Cuba': {'latitude': 4.60971000, 'longitude': -78.08161000},
     }
+    
+    flag = False
 
     options = webdriver.ChromeOptions()
     options.add_argument("--no-sandbox")
@@ -223,9 +256,10 @@ def check_location_based_access(url):
                 time.sleep(2)
                 
             except Exception as e:
-                print(f"Error checking {url} for blocking: {e}")
+                print(f"Error checking {url} for blocking from {country}: {e}")
+                locations[country]['blocked'] = flag
     
-    print('Results:', locations)
+    return locations
           
 def check_request_blocking(url, max_attempts=10):
     """
@@ -236,7 +270,7 @@ def check_request_blocking(url, max_attempts=10):
         max_attempts (int, optional): The maximum number of attempts to check the URL. Defaults to 10.
     
     Returns:
-        None
+        dict: A dictionary containing the max attempts and success count.
     """
     blocker_keywords = set([
         'blocked', 'unavailable', 'restricted', 'denied', 'forbidden',
@@ -257,7 +291,7 @@ def check_request_blocking(url, max_attempts=10):
             if not soup.text:
                 continue
             for tag in soup.find_all(tags_to_check):
-                if any(keyword in str(tag).lower() for keyword in blocker_keywords):
+                if not flag and any(keyword in str(attr).lower() for attr in tag.attrs.values() for keyword in blocker_keywords):
                     flag = True
                     break
             if flag:
@@ -274,6 +308,10 @@ def check_request_blocking(url, max_attempts=10):
         driver.quit()
     except:
         pass
+    return {
+        'max_attempts' : max_attempts,
+        'success_count': success_count,
+    }
                 
 def check_headless_detection(url):
     """
@@ -283,7 +321,7 @@ def check_headless_detection(url):
         url (str): The URL to check.
     
     Returns:
-        None
+        dict : A dictionary containing the normal and headless browser results.
     """
     blocker_keywords = set([
         'blocked', 'unavailable', 'restricted', 'denied', 'forbidden',
@@ -299,6 +337,8 @@ def check_headless_detection(url):
     options.add_argument("--incognito")
     options.add_argument("--log-level=3")
     
+    head_flag = False
+    
     try:
         with webdriver.Chrome(service=chrome_service, options=options) as driver:
             driver.get(url)
@@ -309,15 +349,21 @@ def check_headless_detection(url):
             soup = BeautifulSoup(driver.page_source, 'html.parser')
                             
             if not soup.text:
-                return "No text found"
+                print("No text found for normal browser")
+                head_flag = True
             for tag in soup.find_all(tags_to_check):
                 if any(keyword in str(tag).lower() for keyword in blocker_keywords):
-                    return f"Blocking keyword found in {tag} for normal browser"
+                    print(f"Blocking keyword found in {tag} for normal browser")
+                    head_flag = True
                 if any(keyword in str(attr).lower() for attr in tag.attrs.values() for keyword in blocker_keywords):
-                    return f"Blocking keyword found in {tag} attributes for normal browser"
+                    print(f"Blocking keyword found in {tag} attributes for normal browser")
+                    head_flag = True
     
     except Exception as e:
-        return f"Normal browser, Error: {e}"
+        print (f"Normal browser, Error: {e}")
+        head_flag = True
+    
+    headless_flag = False
     
     try:
         with webdriver.Chrome(service=chrome_service, options=options) as driver:
@@ -329,38 +375,156 @@ def check_headless_detection(url):
             soup = BeautifulSoup(driver.page_source, 'html.parser')
                             
             if not soup.text:
-                return "No text found"
+                print("No text found for headless browser")
+                headless_flag = True
             for tag in soup.find_all(tags_to_check):
                 if any(keyword in str(tag).lower() for keyword in blocker_keywords):
-                    return f"Blocking keyword found in {tag} for headless browser"
+                    print(f"Blocking keyword found in {tag} for normal browser")
+                    headless_flag = True
                 if any(keyword in str(attr).lower() for attr in tag.attrs.values() for keyword in blocker_keywords):
-                    return f"Blocking keyword found in {tag} attributes for headless browser"
+                    print(f"Blocking keyword found in {tag} attributes for normal browser")
+                    headless_flag = True
     
     except Exception as e:
-        return f"Normal browser, Error: {e}"
+        print (f"Normal browser, Error: {e}")
+        headless_flag = True
     
-    return "The URL is accessible by both normal and headless browsers."
+    return {
+        'head_flag': head_flag,
+        'headless_flag': headless_flag,
+    }
+
+#TODO: WIP
+def is_dynamic(url):
+    """
+    Use Selenium to capture additional network requests made by the page.
+    
+    Args:
+        url (str): The URL of the page to analyze.
+    
+    Returns:
+        None
+    """
+    options = webdriver.ChromeOptions()
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument('--headless')
+    options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
+
+    try:
+        with webdriver.Chrome(service=chrome_service, options=options) as driver:
+            driver.execute_cdp_cmd('Network.enable', {})
+            
+            driver.get(url)
+            
+            driver.implicitly_wait(10)
+            WebDriverWait(driver, 10).until(lambda d: d.execute_script('return document.readyState') == 'complete')
+            time.sleep(2)
+
+            # Parse the HTML content
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+            # Check for common dynamic content 
+            scripts = soup.find_all('script')
+            iframes = soup.find_all('iframe')
+            embedded = soup.find_all('embed')
+            if any([scripts, iframes, embedded]):
+                print("Detected dynamic tags, indicating potential dynamic content loading.")
+                print("=" * 80)
+                print()
+
+                # Initialize lists to store request and response data
+                requests_data = []
+                responses_data = []
+                # Get performance logs
+                logs = driver.get_log("performance")
+                # Process logs
+                for log in logs:
+                    message = json.loads(log["message"])["message"]
+                    if message["method"] == "Network.requestWillBeSent":
+                        request = message["params"]["request"]
+                        requests_data.append({
+                            "URL": request['url'],
+                            "Method": request['method'],
+                            "Headers": json.dumps(request["headers"]),
+                            "Payload": request.get('postData', '')
+                        })
+                    elif message["method"] == "Network.responseReceived":
+                        response = message["params"]["response"]
+                        try:
+                            response_body = driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': message["params"]["requestId"]})
+                            body = response_body.get('body', '')
+                        except Exception as e:
+                            print(f"Error fetching response body for {response['url']}: {e}")
+                            body = e
+                        finally:
+                            responses_data.append({
+                                "URL": response['url'],
+                                "Status Code": response['status'],
+                                "Headers": json.dumps(response["headers"]),
+                                "Body": body
+                            })
+                
+                driver.quit()
+                
+                # Convert lists to pandas DataFrames
+                requests_df = pd.DataFrame(requests_data)
+                responses_df = pd.DataFrame(responses_data)
+                
+                # Save to Excel
+                with pd.ExcelWriter(f"{(url)}_Network_Activity.xlsx", engine='openpyxl') as writer:
+                    requests_df.to_excel(writer, sheet_name='Requests', index=False)
+                    responses_df.to_excel(writer, sheet_name='Responses', index=False)
+
+                return True
+            else:
+                print("No script tags detected. Content is likely static.")
+                return False
+    except Exception as e:
+        print(f"Unable to access {url} with Selenium. Exception: {e}")
+        try:
+            driver.quit()
+        except:
+            pass
+        return False
 
 if __name__ == '__main__':
     urls_to_check = [
-        # 'https://linkedin.com', 
-        # 'https://google.com',
-        'https://www.youtube.com',
-        # 'https://www.amazon.com',
-        ]
+        'https://linkedin.com', 
+        'https://google.com',
+    ]
+    
+    all_results = []  # Initialize an empty list to collect results
+    
     for url in urls_to_check:
         print(f"Checking URL: {url}")
         
-        check_auth_wall(url)
-
-        check_captcha_service(url)
-
-        check_headless_detection(url)
+        results = {'url': url}
         terminate_zombie_processes()
         
-        check_request_blocking(url)
+        results['auth_wall'] = check_auth_wall(url)
+        terminate_zombie_processes()
+
+        results['captcha_service'] = check_captcha_service(url)
+        terminate_zombie_processes()
+
+        results['headless_detection'] = check_headless_detection(url)
+        terminate_zombie_processes()
+        
+        results['request_blocking'] = check_request_blocking(url)
         terminate_zombie_processes()
        
-        check_location_based_access(url)
+        results['location_based_access'] = check_location_based_access(url)
         terminate_zombie_processes()
         
+        all_results.append(results) 
+    
+    # Convert all_results to a DataFrame
+    df = pd.DataFrame(all_results)
+    
+    # Save to Excel
+    with pd.ExcelWriter('blocker_check.xlsx', engine='xlsxwriter') as writer:
+        df.to_excel(writer, sheet_name='selenium_blocker_checks', index=False)
+        writer._save()
+        print("Saved results to Excel")
