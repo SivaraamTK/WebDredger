@@ -25,7 +25,6 @@ reference:
 # Import the required modules
 import os
 import re
-from collections import defaultdict
 from argparse import ArgumentParser
 from datetime import datetime
 from jsbeautifier import beautify
@@ -313,39 +312,9 @@ class ScrapyScraperSpider(Spider):
 			"total_assets_downloaded": len(self.__downloaded),
 			"avg_time_per_url": str(avg_time_per_url),
 			"scraper_stats": stats,
-			"downloaded_files": defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+			"downloaded_files": [{'url': url, 'file_path': info['file_path']} for url, info in self.__downloaded.items()]
 		}
-
-		# Organize the downloaded files by domain, path, and filename
-		for url, file_path in self.__downloaded.items():
-			parsed_url = urlparse(url)
-			domain = parsed_url.netloc
-			path = parsed_url.path.strip("/")
-			path_parts = path.split('/')
-			current_level = results["downloaded_files"][domain]
-
-			for part in path_parts:
-				if part not in current_level:
-					current_level[part] = {}
-				current_level = current_level[part]
-
-			filename = os.path.basename(file_path)
-			if "files" not in current_level:
-				current_level["files"] = []
-			if filename not in current_level["files_set"]:
-				current_level["files"].append((filename, file_path))
-				current_level["files_set"].add(filename)
-	
-		def remove_sets(d):
-			if "files_set" in d:
-				del d["files_set"]
-			for key in d:
-				if isinstance(d[key], dict):
-					remove_sets(d[key])
-
-		remove_sets(results["downloaded_files"])
-
-
+   
 		# Render the HTML template
 		env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
 		template = env.get_template("template.html")
@@ -354,7 +323,7 @@ class ScrapyScraperSpider(Spider):
 		# Save the HTML file
 		with open(self.__out+'.html', "w", encoding="utf-8") as f:
 			f.write(html)
-		print(f"Report generated: {self.__out}")
+		print(f"Report generated: {self.__out}.html")
 
 	def __print_start_urls(self):
 		'''
@@ -523,7 +492,7 @@ class ScrapyScraperSpider(Spider):
 							f.write(response.body.encode())
 						else:
 							f.write(response.body)
-				self.__downloaded[response.url] = file_path
+				self.__downloaded[response.url] = {'url': response.url, 'file_path': file_path}
 				print("Saved: " + file_path)
 			else:
 				print(f"Error downloading {response.url}: HTTP {response.status}")

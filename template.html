@@ -83,23 +83,14 @@
     
     <h2>Downloaded Files</h2>
     {% if results.downloaded_files %}
-    <ul>
-        {% for domain, domain_data in results["downloaded_files"].items() %}
-            <li><strong>{{ domain }}</strong>
-                <ul>
-                {% for path, path_data in domain_data.items() %}
-                    <li>{{ path }}
-                        <ul>
-                        {% for file in path_data["files"] %}
-                            <li><a href="{{ file[1] }}">{{ file[0] }}</a></li>
-                        {% endfor %}
-                        </ul>
-                    </li>
-                {% endfor %}
-                </ul>
-            </li>
+    <ol>
+        {% for file in results.downloaded_files %}
+        <li>
+            URL: <a href="{{ file.url }}" target="_blank">{{ file.url }}</a><br>
+            Saved at: <a href="{{ file.file_path }}" target="_blank">{{ file.file_path }}</a>
+        </li>
         {% endfor %}
-        </ul>
+    </ol>
     {% else %}
         <p>No files downloaded.</p>
     {% endif %}
