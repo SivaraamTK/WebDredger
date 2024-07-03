@@ -1,0 +1,2 @@
+< html > < head > < meta name = "color-scheme"
+content = "light dark" > < /head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">self.__SSG_MANIFEST=new Set,self.__SSG_MANIFEST_CB&amp;&amp;self.__SSG_MANIFEST_CB();</pre > < /body></html >

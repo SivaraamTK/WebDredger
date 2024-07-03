@@ -1,0 +1,207 @@
+<!DOCTYPE html><html><head>
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate, post-check=0, pre-check=0">
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8">
+  <title>Compliance</title>
+  <base href="/">
+  <script>
+    // Checks if browser is modern. IE users cannot use our application, so we send them to the notsupported.html page
+    function supportsES6() {
+      "use strict";
+
+      if (typeof Symbol == "undefined") return false;
+      try {
+        // Tests for arrow function support
+        eval("var test = (i) => i + 1");
+        // List can be expanded to check support for used features
+      } catch (e) {
+        return false;
+      }
+
+      return true;
+    }
+
+          // if (!supportsES6() && window.location.href.indexOf("notsupported") == -1) {
+          //   window.location.href = "/notsupported.html";
+          // }
+  </script>
+
+  <meta name="mobile-wep-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="HandheldFriendly" content="true">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="/global-assets/roboto/font-Roboto.css" rel="stylesheet">
+  <link href="/global-assets/Material-Icons/font-Material-Icons.css" rel="stylesheet">
+
+  <style type="text/css">
+    body,
+    html {
+      height: 100%;
+      font-display: swap;
+      background-color: white;
+    }
+
+    .app-loading {
+      opacity: 1;
+      z-index: 100;
+      /* transition: opacity .8s ease-in-out; */
+      position: fixed;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background: white;
+    }
+
+    app-root:empty + .app-loading {
+    }
+
+    .app-loading .spinner {
+      height: 200px;
+      width: 200px;
+      animation: rotate 2s linear infinite;
+      transform-origin: center center;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+
+      .app-loading .spinner .path {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+        animation: dash 1.5s ease-in-out infinite;
+        stroke-linecap: round;
+        stroke: #ddd;
+      }
+
+    .splashscreen {
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: white;
+    }
+    /* JR Loader */
+
+    .app-loading > .splashscreen > .wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      padding: 10px;
+    }
+
+    .loader {
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-loading > .splashscreen > .wrapper > div {
+      text-align: center;
+    }
+
+    .loader p {
+      display: none;
+      font-weight: 700;
+      font-size: 1.5em;
+    }
+
+    .circle {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-color: #f5f5f5;
+      border-radius: 50%;
+      animation: loading 1.5s cubic-bezier(.6, .3, .2, 1.0) infinite;
+      transform-origin: bottom center;
+      position: relative;
+    }
+
+    @keyframes loading {
+      0%, 100% {
+        transform: translateY(0px);
+        background-color: #f5f5f5;
+      }
+
+      25% {
+        transform: translateY(5px);
+        background-color: #a1a1a1;
+      }
+
+      45% {
+        transform: translateY(0px);
+        background-color: #f5f5f5;
+      }
+    }
+
+    .circle-1 {
+      animation-delay: 0.1s;
+    }
+
+    .circle-2 {
+      animation-delay: 0.2s;
+    }
+
+    .circle-3 {
+      animation-delay: 0.3s;
+    }
+
+    .circle-4 {
+      animation-delay: 0.4s;
+    }
+
+    .circle-5 {
+      animation-delay: 0.5s;
+    }
+
+    .circle-6 {
+      animation-delay: 0.6s;
+    }
+    /* JR Loader */
+
+    .hide-until-loaded {
+      opacity: 0;
+      transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+      transition-property: opacity;
+      transition-duration: 1s;
+    }
+  </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1976d2">
+  <meta name="google-site-verification" content="BYhpPpKwvuHXhlVPinJSc3Zaikq8P-6GoPRGJFJBE6M">
+<link rel="stylesheet" href="styles.85becc434198ad0b9c45.css"></head>
+
+<body>
+  <app-root class="app-root hide-until-loaded force-removal-of-top-placement"></app-root>
+  <div class="app-loading">
+    <div class="splashscreen">
+      <div class="wrapper">
+        <div class="loader">
+          <p>LOADING <span class="bullets"></span></p>
+        </div>
+        <div>
+          <span class="circle circle-1"></span>
+          <span class="circle circle-2"></span>
+          <span class="circle circle-3"></span>
+          <span class="circle circle-4"></span>
+          <span class="circle circle-5"></span>
+          <span class="circle circle-6"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div data-nosnippet="true">
+    <noscript>Please enable JavaScript to continue using this application.</noscript>
+  </div>
+<script src="runtime-es2015.a4dadbc03350107420a4.js" type="module"></script><script src="runtime-es5.a4dadbc03350107420a4.js" nomodule="" defer=""></script><script src="polyfills-es5.34686265350d5e726a89.js" nomodule="" defer=""></script><script src="polyfills-es2015.988afdf6c3711ce93826.js" type="module"></script><script src="main-es2015.e031a53720a7d5741333.js" type="module"></script><script src="main-es5.e031a53720a7d5741333.js" nomodule="" defer=""></script>
+
+
+</body></html>

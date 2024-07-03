@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webdredger Report</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            margin-top: 30px;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Webdredger Report</h1>
+    <h2>Summary</h2>
+    <ul>
+        <li>Start Time: 2024-07-03 15:21:42</li>
+        <li>End Time: 2024-07-03 15:50:33</li>
+        <li>Time taken: 0:28:50.822317</li>
+        <li>Method used: Playwright</li>
+        <li>Total URLs crawled: 129</li>
+        <li>Total URLs collected: 3059</li>
+        <li>Total assets downloaded: 130</li>
+        <li>Average time taken to crawl URL: 13.417227263565893</li>
+    </ul>
+    
+    <h2>Scraper Stats</h2>
+    
+        <table>
+            <thead>
+                <tr>
+                    <th>Stat</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr>
+                    <td>log_count/DEBUG</td>
+                    <td>43625</td>
+                </tr>
+                
+                <tr>
+                    <td>log_count/INFO</td>
+                    <td>10842</td>
+                </tr>
+                
+                <tr>
+                    <td>start_time</td>
+                    <td>2024-07-03 09:51:46.291013+00:00</td>
+                </tr>
+                
+                <tr>
+                    <td>memusage/startup</td>
+                    <td>74326016</td>
+                </tr>
+                
+                <tr>
+                    <td>memusage/max</td>
+                    <td>6046715904</td>
+                </tr>
+                
+                <tr>
+                    <td>scheduler/enqueued/memory</td>
+                    <td>307</td>
+                </tr>
+                
+                <tr>
+                    <td>scheduler/enqueued</td>
+                    <td>307</td>
+                </tr>
+                
+                <tr>
+                    <td>scheduler/dequeued/memory</td>
+                    <td>307</td>
+                </tr>
+                
+                <tr>
+                    <td>scheduler/dequeued</td>
+                    <td>307</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/request_count</td>
+                    <td>307</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/request_method_count/GET</td>
+                    <td>307</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/request_bytes</td>
+                    <td>266248</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/context_count</td>
+                    <td>272</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/context_count/persistent/False</td>
+                    <td>272</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/context_count/remote/False</td>
+                    <td>272</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/context_count/max_concurrent</td>
+                    <td>133</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/page_count</td>
+                    <td>272</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/page_count/max_concurrent</td>
+                    <td>133</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count</td>
+                    <td>11803</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/resource_type/document</td>
+                    <td>509</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/method/GET</td>
+                    <td>10540</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/navigation</td>
+                    <td>509</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/response_count</td>
+                    <td>8706</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/response_count/resource_type/document</td>
+                    <td>502</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/response_count/method/GET</td>
+                    <td>7707</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/resource_type/other</td>
+                    <td>233</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/resource_type/script</td>
+                    <td>6310</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/resource_type/stylesheet</td>
+                    <td>809</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/resource_type/image</td>
+                    <td>1152</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/aborted</td>
+                    <td>2913</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/response_count/resource_type/other</td>
+                    <td>233</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/response_count/resource_type/script</td>
+                    <td>6192</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/resource_type/xhr</td>
+                    <td>1837</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/response_count/resource_type/xhr</td>
+                    <td>1778</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/resource_type/fetch</td>
+                    <td>686</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/method/POST</td>
+                    <td>1259</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/response_count</td>
+                    <td>265</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/response_status_count/200</td>
+                    <td>259</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/response_bytes</td>
+                    <td>61531219</td>
+                </tr>
+                
+                <tr>
+                    <td>response_received_count</td>
+                    <td>265</td>
+                </tr>
+                
+                <tr>
+                    <td>log_count/WARNING</td>
+                    <td>3</td>
+                </tr>
+                
+                <tr>
+                    <td>request_depth_max</td>
+                    <td>1</td>
+                </tr>
+                
+                <tr>
+                    <td>dupefilter/filtered</td>
+                    <td>1</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/resource_type/font</td>
+                    <td>266</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/response_count/method/POST</td>
+                    <td>995</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/response_status_count/403</td>
+                    <td>6</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/exception_count</td>
+                    <td>42</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/exception_type_count/playwright._impl._errors.Error</td>
+                    <td>4</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/method/HEAD</td>
+                    <td>4</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/response_count/method/HEAD</td>
+                    <td>4</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/request_count/resource_type/eventsource</td>
+                    <td>1</td>
+                </tr>
+                
+                <tr>
+                    <td>playwright/response_count/resource_type/eventsource</td>
+                    <td>1</td>
+                </tr>
+                
+                <tr>
+                    <td>downloader/exception_type_count/playwright._impl._errors.TargetClosedError</td>
+                    <td>38</td>
+                </tr>
+                
+            </tbody>
+        </table>
+    
+    
+    <h2>Downloaded Files</h2>
+    
+    <ol>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/6758-3c903ffda0a91dd5.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/6758-3c903ffda0a91dd5.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/6758-3c903ffda0a91dd5.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/6758-3c903ffda0a91dd5.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://legal.trustpilot.com/for-everyone/modern-slavery-and-human-trafficking-statement" target="_blank">https://legal.trustpilot.com/for-everyone/modern-slavery-and-human-trafficking-statement</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/for-everyone/modern-slavery-and-human-trafficking-statement.html" target="_blank">trustpilot-scrape-results/trustpilot/for-everyone/modern-slavery-and-human-trafficking-statement.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/review/levis.com" target="_blank">https://www.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://status.trustpilot.com/" target="_blank">https://status.trustpilot.com/</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trustpilot.html" target="_blank">trustpilot-scrape-results/trustpilot/trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://legal.trustpilot.com/for-reviewers/guidelines-for-reviewers" target="_blank">https://legal.trustpilot.com/for-reviewers/guidelines-for-reviewers</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/for-reviewers/guidelines-for-reviewers.html" target="_blank">trustpilot-scrape-results/trustpilot/for-reviewers/guidelines-for-reviewers.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://legal.trustpilot.com/for-reviewers/terms-of-use-for-consumers" target="_blank">https://legal.trustpilot.com/for-reviewers/terms-of-use-for-consumers</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/for-reviewers/terms-of-use-for-consumers.html" target="_blank">trustpilot-scrape-results/trustpilot/for-reviewers/terms-of-use-for-consumers.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://legal.trustpilot.com/for-reviewers/end-user-privacy-terms" target="_blank">https://legal.trustpilot.com/for-reviewers/end-user-privacy-terms</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/for-reviewers/end-user-privacy-terms.html" target="_blank">trustpilot-scrape-results/trustpilot/for-reviewers/end-user-privacy-terms.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.youtube.com/c/trustpilotreviews" target="_blank">https://www.youtube.com/c/trustpilotreviews</a><br>
+            Saved at: <a href="trustpilot-scrape-results/youtube/c/trustpilotreviews.html" target="_blank">trustpilot-scrape-results/youtube/c/trustpilotreviews.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://legal.trustpilot.com/" target="_blank">https://legal.trustpilot.com/</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trustpilot.html" target="_blank">trustpilot-scrape-results/trustpilot/trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.linkedin.com/company/trustpilot/" target="_blank">https://www.linkedin.com/company/trustpilot/</a><br>
+            Saved at: <a href="trustpilot-scrape-results/linkedin/company/trustpilot.html" target="_blank">trustpilot-scrape-results/linkedin/company/trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessapp.b2b.trustpilot.com/?locale=en-us&utm_medium=consumer&utm_source=footer_link_trustpilot_business_app_login&utm_campaign=consumer_cta" target="_blank">https://businessapp.b2b.trustpilot.com/?locale=en-us&utm_medium=consumer&utm_source=footer_link_trustpilot_business_app_login&utm_campaign=consumer_cta</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trustpilot.html" target="_blank">trustpilot-scrape-results/trustpilot/trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://business.trustpilot.com/reviews" target="_blank">https://business.trustpilot.com/reviews</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://business.trustpilot.com/pricing?utm_medium=consumer&utm_source=footer_link_trustpilot_business_site_plans&utm_campaign=consumer_cta" target="_blank">https://business.trustpilot.com/pricing?utm_medium=consumer&utm_source=footer_link_trustpilot_business_site_plans&utm_campaign=consumer_cta</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/pricing.html" target="_blank">trustpilot-scrape-results/trustpilot/pricing.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://business.trustpilot.com/features/service-reviews" target="_blank">https://business.trustpilot.com/features/service-reviews</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/features/service-reviews.html" target="_blank">trustpilot-scrape-results/trustpilot/features/service-reviews.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/connect?signup=True" target="_blank">https://www.trustpilot.com/users/connect?signup=True</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/connect.html" target="_blank">trustpilot-scrape-results/trustpilot/users/connect.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/connect" target="_blank">https://www.trustpilot.com/users/connect</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/connect.html" target="_blank">trustpilot-scrape-results/trustpilot/users/connect.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://business.trustpilot.com/?utm_medium=consumer&utm_source=footer_link_trustpilot_business_site&utm_campaign=consumer_cta" target="_blank">https://business.trustpilot.com/?utm_medium=consumer&utm_source=footer_link_trustpilot_business_site&utm_campaign=consumer_cta</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trustpilot.html" target="_blank">trustpilot-scrape-results/trustpilot/trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://support.trustpilot.com/hc/en-us" target="_blank">https://support.trustpilot.com/hc/en-us</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/hc/en-us.html" target="_blank">trustpilot-scrape-results/trustpilot/hc/en-us.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://apps.apple.com/us/app/trustpilot-reviews-ratings/id1608392803?mt=8" target="_blank">https://apps.apple.com/us/app/trustpilot-reviews-ratings/id1608392803?mt=8</a><br>
+            Saved at: <a href="trustpilot-scrape-results/apple/us/app/trustpilot-reviews-ratings/id1608392803.html" target="_blank">trustpilot-scrape-results/apple/us/app/trustpilot-reviews-ratings/id1608392803.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://investors.trustpilot.com/" target="_blank">https://investors.trustpilot.com/</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trustpilot.html" target="_blank">trustpilot-scrape-results/trustpilot/trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/blog" target="_blank">https://www.trustpilot.com/blog</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/blog.html" target="_blank">trustpilot-scrape-results/trustpilot/blog.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://press.trustpilot.com/" target="_blank">https://press.trustpilot.com/</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trustpilot.html" target="_blank">trustpilot-scrape-results/trustpilot/trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://business.trustpilot.com/jobs" target="_blank">https://business.trustpilot.com/jobs</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/jobs.html" target="_blank">trustpilot-scrape-results/trustpilot/jobs.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/contact" target="_blank">https://www.trustpilot.com/contact</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/contact.html" target="_blank">trustpilot-scrape-results/trustpilot/contact.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/about" target="_blank">https://www.trustpilot.com/about</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/about.html" target="_blank">trustpilot-scrape-results/trustpilot/about.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/end-of-the-line" target="_blank">https://www.trustpilot.com/end-of-the-line</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/end-of-the-line.html" target="_blank">trustpilot-scrape-results/trustpilot/end-of-the-line.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/trust" target="_blank">https://www.trustpilot.com/trust</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trust.html" target="_blank">trustpilot-scrape-results/trustpilot/trust.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://support.trustpilot.com/hc/en-us/articles/205675248-Who-can-write-a-review-and-when#when-cant-you-write-a-review-2" target="_blank">https://support.trustpilot.com/hc/en-us/articles/205675248-Who-can-write-a-review-and-when#when-cant-you-write-a-review-2</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/hc/en-us/articles/205675248-Who-can-write-a-review-and-when.html" target="_blank">trustpilot-scrape-results/trustpilot/hc/en-us/articles/205675248-Who-can-write-a-review-and-when.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/trust/how-reviews-work" target="_blank">https://www.trustpilot.com/trust/how-reviews-work</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trust/how-reviews-work.html" target="_blank">trustpilot-scrape-results/trustpilot/trust/how-reviews-work.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://support.trustpilot.com/hc/en-us/articles/4421166844562-What-does-verified-company-mean" target="_blank">https://support.trustpilot.com/hc/en-us/articles/4421166844562-What-does-verified-company-mean</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/hc/en-us/articles/4421166844562-What-does-verified-company-mean.html" target="_blank">trustpilot-scrape-results/trustpilot/hc/en-us/articles/4421166844562-What-does-verified-company-mean.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://support.trustpilot.com/hc/en-us/articles/4410802590354-Verify-your-identity-with-photo-ID" target="_blank">https://support.trustpilot.com/hc/en-us/articles/4410802590354-Verify-your-identity-with-photo-ID</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/hc/en-us/articles/4410802590354-Verify-your-identity-with-photo-ID.html" target="_blank">trustpilot-scrape-results/trustpilot/hc/en-us/articles/4410802590354-Verify-your-identity-with-photo-ID.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/trust/combating-fake-reviews" target="_blank">https://www.trustpilot.com/trust/combating-fake-reviews</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trust/combating-fake-reviews.html" target="_blank">trustpilot-scrape-results/trustpilot/trust/combating-fake-reviews.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://support.trustpilot.com/hc/en-us/articles/223402108--8-tips-for-writing-great-customer-reviews" target="_blank">https://support.trustpilot.com/hc/en-us/articles/223402108--8-tips-for-writing-great-customer-reviews</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/hc/en-us/articles/223402108--8-tips-for-writing-great-customer-reviews.html" target="_blank">trustpilot-scrape-results/trustpilot/hc/en-us/articles/223402108--8-tips-for-writing-great-customer-reviews.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://support.trustpilot.com/hc/en-us/articles/223402468--How-do-reviews-get-on-Trustpilot?utm_campaign=verified&utm_content=verified_tooltip&utm_medium=referral&utm_source=transparency_page" target="_blank">https://support.trustpilot.com/hc/en-us/articles/223402468--How-do-reviews-get-on-Trustpilot?utm_campaign=verified&utm_content=verified_tooltip&utm_medium=referral&utm_source=transparency_page</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/hc/en-us/articles/223402468--How-do-reviews-get-on-Trustpilot.html" target="_blank">trustpilot-scrape-results/trustpilot/hc/en-us/articles/223402468--How-do-reviews-get-on-Trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://support.trustpilot.com/hc/en-us/articles/360019729300-What-s-the-retention-period-of-reviews" target="_blank">https://support.trustpilot.com/hc/en-us/articles/360019729300-What-s-the-retention-period-of-reviews</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/hc/en-us/articles/360019729300-What-s-the-retention-period-of-reviews.html" target="_blank">trustpilot-scrape-results/trustpilot/hc/en-us/articles/360019729300-What-s-the-retention-period-of-reviews.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://support.trustpilot.com/hc/en-us/articles/205675248-Who-can-write-a-review-and-when" target="_blank">https://support.trustpilot.com/hc/en-us/articles/205675248-Who-can-write-a-review-and-when</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/hc/en-us/articles/205675248-Who-can-write-a-review-and-when.html" target="_blank">trustpilot-scrape-results/trustpilot/hc/en-us/articles/205675248-Who-can-write-a-review-and-when.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://business.trustpilot.com/signup?locale=en-US&utm_medium=consumer&utm_source=claim_company_button&utm_campaign=consumer_cta&website=levis.com&country=US" target="_blank">https://business.trustpilot.com/signup?locale=en-US&utm_medium=consumer&utm_source=claim_company_button&utm_campaign=consumer_cta&website=levis.com&country=US</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/signup.html" target="_blank">trustpilot-scrape-results/trustpilot/signup.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://support.trustpilot.com/hc/en-us/articles/360013930439-Your-business-profile-page?utm_campaign=interlinking&utm_medium=referral&utm_source=consumer_profile_page#whats-shown-business-profile-page-2" target="_blank">https://support.trustpilot.com/hc/en-us/articles/360013930439-Your-business-profile-page?utm_campaign=interlinking&utm_medium=referral&utm_source=consumer_profile_page#whats-shown-business-profile-page-2</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/hc/en-us/articles/360013930439-Your-business-profile-page.html" target="_blank">trustpilot-scrape-results/trustpilot/hc/en-us/articles/360013930439-Your-business-profile-page.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/review/levis.com?page=33" target="_blank">https://www.trustpilot.com/review/levis.com?page=33</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/review/levis.com?page=4" target="_blank">https://www.trustpilot.com/review/levis.com?page=4</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/review/levis.com?page=3" target="_blank">https://www.trustpilot.com/review/levis.com?page=3</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/65d1a8042cfaa804edbc0c07" target="_blank">https://www.trustpilot.com/reviews/65d1a8042cfaa804edbc0c07</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/65d1a8042cfaa804edbc0c07.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/65d1a8042cfaa804edbc0c07.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/61f2f5593ed1620012e54968" target="_blank">https://www.trustpilot.com/users/61f2f5593ed1620012e54968</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/61f2f5593ed1620012e54968.html" target="_blank">trustpilot-scrape-results/trustpilot/users/61f2f5593ed1620012e54968.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/65e091c8f2642b5edd3f3ba7" target="_blank">https://www.trustpilot.com/reviews/65e091c8f2642b5edd3f3ba7</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/65e091c8f2642b5edd3f3ba7.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/65e091c8f2642b5edd3f3ba7.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/5dfa0c21bc44db7903142b70" target="_blank">https://www.trustpilot.com/users/5dfa0c21bc44db7903142b70</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/5dfa0c21bc44db7903142b70.html" target="_blank">trustpilot-scrape-results/trustpilot/users/5dfa0c21bc44db7903142b70.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/660b620f5209224290dba225" target="_blank">https://www.trustpilot.com/reviews/660b620f5209224290dba225</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/660b620f5209224290dba225.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/660b620f5209224290dba225.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/660b61f8cc61750012626ce5" target="_blank">https://www.trustpilot.com/users/660b61f8cc61750012626ce5</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/660b61f8cc61750012626ce5.html" target="_blank">trustpilot-scrape-results/trustpilot/users/660b61f8cc61750012626ce5.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/6620230e5acd6740213c0167" target="_blank">https://www.trustpilot.com/reviews/6620230e5acd6740213c0167</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/6620230e5acd6740213c0167.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/6620230e5acd6740213c0167.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/662023040bda410012b3e8aa" target="_blank">https://www.trustpilot.com/users/662023040bda410012b3e8aa</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/662023040bda410012b3e8aa.html" target="_blank">trustpilot-scrape-results/trustpilot/users/662023040bda410012b3e8aa.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/66536fa58b59c9edd1d7b019" target="_blank">https://www.trustpilot.com/reviews/66536fa58b59c9edd1d7b019</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/66536fa58b59c9edd1d7b019.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/66536fa58b59c9edd1d7b019.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/4ee9aec40000640001102d5b" target="_blank">https://www.trustpilot.com/users/4ee9aec40000640001102d5b</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/4ee9aec40000640001102d5b.html" target="_blank">trustpilot-scrape-results/trustpilot/users/4ee9aec40000640001102d5b.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/660da77348a3ebdb1a9c772d" target="_blank">https://www.trustpilot.com/reviews/660da77348a3ebdb1a9c772d</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/660da77348a3ebdb1a9c772d.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/660da77348a3ebdb1a9c772d.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/5cb7726f2d7a95348b07fbf9" target="_blank">https://www.trustpilot.com/users/5cb7726f2d7a95348b07fbf9</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/5cb7726f2d7a95348b07fbf9.html" target="_blank">trustpilot-scrape-results/trustpilot/users/5cb7726f2d7a95348b07fbf9.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/6640f300699b7118263bdfa6" target="_blank">https://www.trustpilot.com/reviews/6640f300699b7118263bdfa6</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/6640f300699b7118263bdfa6.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/6640f300699b7118263bdfa6.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/6640f2f99aac916671c62ec2" target="_blank">https://www.trustpilot.com/users/6640f2f99aac916671c62ec2</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/6640f2f99aac916671c62ec2.html" target="_blank">trustpilot-scrape-results/trustpilot/users/6640f2f99aac916671c62ec2.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/65e8a62b05609e9207804358" target="_blank">https://www.trustpilot.com/reviews/65e8a62b05609e9207804358</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/65e8a62b05609e9207804358.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/65e8a62b05609e9207804358.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/5dd1a11dacf1ddd6f93d24ee" target="_blank">https://www.trustpilot.com/users/5dd1a11dacf1ddd6f93d24ee</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/5dd1a11dacf1ddd6f93d24ee.html" target="_blank">trustpilot-scrape-results/trustpilot/users/5dd1a11dacf1ddd6f93d24ee.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/6632fb63a6d453c75ba6b672" target="_blank">https://www.trustpilot.com/reviews/6632fb63a6d453c75ba6b672</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/6632fb63a6d453c75ba6b672.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/6632fb63a6d453c75ba6b672.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/6632fb5587542c0011c87548" target="_blank">https://www.trustpilot.com/users/6632fb5587542c0011c87548</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/6632fb5587542c0011c87548.html" target="_blank">trustpilot-scrape-results/trustpilot/users/6632fb5587542c0011c87548.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/663a3eed6718cd6360d66b71" target="_blank">https://www.trustpilot.com/reviews/663a3eed6718cd6360d66b71</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/663a3eed6718cd6360d66b71.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/663a3eed6718cd6360d66b71.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/663a3ede91a4697f1f730855" target="_blank">https://www.trustpilot.com/users/663a3ede91a4697f1f730855</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/663a3ede91a4697f1f730855.html" target="_blank">trustpilot-scrape-results/trustpilot/users/663a3ede91a4697f1f730855.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/6648363238d8761a293bfc52" target="_blank">https://www.trustpilot.com/reviews/6648363238d8761a293bfc52</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/6648363238d8761a293bfc52.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/6648363238d8761a293bfc52.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/664836212c441a15b56b088e" target="_blank">https://www.trustpilot.com/users/664836212c441a15b56b088e</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/664836212c441a15b56b088e.html" target="_blank">trustpilot-scrape-results/trustpilot/users/664836212c441a15b56b088e.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/66589620bc7efb53082f0bee" target="_blank">https://www.trustpilot.com/reviews/66589620bc7efb53082f0bee</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/66589620bc7efb53082f0bee.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/66589620bc7efb53082f0bee.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/5e417d8c7762dad23d2539ab" target="_blank">https://www.trustpilot.com/users/5e417d8c7762dad23d2539ab</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/5e417d8c7762dad23d2539ab.html" target="_blank">trustpilot-scrape-results/trustpilot/users/5e417d8c7762dad23d2539ab.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/663a56bdf1f3f52ccf389231" target="_blank">https://www.trustpilot.com/reviews/663a56bdf1f3f52ccf389231</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/663a56bdf1f3f52ccf389231.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/663a56bdf1f3f52ccf389231.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/663a56b891a469014b731379" target="_blank">https://www.trustpilot.com/users/663a56b891a469014b731379</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/663a56b891a469014b731379.html" target="_blank">trustpilot-scrape-results/trustpilot/users/663a56b891a469014b731379.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/666c315838118d306d6c9fcd" target="_blank">https://www.trustpilot.com/reviews/666c315838118d306d6c9fcd</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/666c315838118d306d6c9fcd.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/666c315838118d306d6c9fcd.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/5d712a3948d1f0d854eb1ab8" target="_blank">https://www.trustpilot.com/users/5d712a3948d1f0d854eb1ab8</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/5d712a3948d1f0d854eb1ab8.html" target="_blank">trustpilot-scrape-results/trustpilot/users/5d712a3948d1f0d854eb1ab8.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/66799a3b3d3a6f3ca50a1775" target="_blank">https://www.trustpilot.com/reviews/66799a3b3d3a6f3ca50a1775</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/66799a3b3d3a6f3ca50a1775.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/66799a3b3d3a6f3ca50a1775.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/62e64fd0abcef30012578dc7" target="_blank">https://www.trustpilot.com/users/62e64fd0abcef30012578dc7</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/62e64fd0abcef30012578dc7.html" target="_blank">trustpilot-scrape-results/trustpilot/users/62e64fd0abcef30012578dc7.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/66784aa8430fa5b2add26ebf" target="_blank">https://www.trustpilot.com/reviews/66784aa8430fa5b2add26ebf</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/66784aa8430fa5b2add26ebf.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/66784aa8430fa5b2add26ebf.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/597fe9320000ff000ab5e933" target="_blank">https://www.trustpilot.com/users/597fe9320000ff000ab5e933</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/597fe9320000ff000ab5e933.html" target="_blank">trustpilot-scrape-results/trustpilot/users/597fe9320000ff000ab5e933.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/66733da456b4965cd888efe8" target="_blank">https://www.trustpilot.com/reviews/66733da456b4965cd888efe8</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/66733da456b4965cd888efe8.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/66733da456b4965cd888efe8.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/66733d9c5435cb03ed7b4dd2" target="_blank">https://www.trustpilot.com/users/66733d9c5435cb03ed7b4dd2</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/66733d9c5435cb03ed7b4dd2.html" target="_blank">trustpilot-scrape-results/trustpilot/users/66733d9c5435cb03ed7b4dd2.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/6672d2a06c73a09e3a005aa3" target="_blank">https://www.trustpilot.com/reviews/6672d2a06c73a09e3a005aa3</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/6672d2a06c73a09e3a005aa3.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/6672d2a06c73a09e3a005aa3.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/5fbdf33606deb5001b6d86ce" target="_blank">https://www.trustpilot.com/users/5fbdf33606deb5001b6d86ce</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/5fbdf33606deb5001b6d86ce.html" target="_blank">trustpilot-scrape-results/trustpilot/users/5fbdf33606deb5001b6d86ce.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/6681e7dbc40f7875353e3386" target="_blank">https://www.trustpilot.com/reviews/6681e7dbc40f7875353e3386</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/6681e7dbc40f7875353e3386.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/6681e7dbc40f7875353e3386.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/5f08389c866c468e403d1fc2" target="_blank">https://www.trustpilot.com/users/5f08389c866c468e403d1fc2</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/5f08389c866c468e403d1fc2.html" target="_blank">trustpilot-scrape-results/trustpilot/users/5f08389c866c468e403d1fc2.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/reviews/6681dd058ad5d0375f0a0c5b" target="_blank">https://www.trustpilot.com/reviews/6681dd058ad5d0375f0a0c5b</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/reviews/6681dd058ad5d0375f0a0c5b.html" target="_blank">trustpilot-scrape-results/trustpilot/reviews/6681dd058ad5d0375f0a0c5b.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/5d654cae832740e3697c2988" target="_blank">https://www.trustpilot.com/users/5d654cae832740e3697c2988</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/5d654cae832740e3697c2988.html" target="_blank">trustpilot-scrape-results/trustpilot/users/5d654cae832740e3697c2988.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/review/levis.com/transparency" target="_blank">https://www.trustpilot.com/review/levis.com/transparency</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.com/transparency.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.com/transparency.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/evaluate/levis.com" target="_blank">https://www.trustpilot.com/evaluate/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/evaluate/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/evaluate/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://business.trustpilot.com/?utm_medium=consumer&utm_source=for_companies&utm_campaign=consumer_cta" target="_blank">https://business.trustpilot.com/?utm_medium=consumer&utm_source=for_companies&utm_campaign=consumer_cta</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trustpilot.html" target="_blank">trustpilot-scrape-results/trustpilot/trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/users/connect?redirect=%2freview%2flevis.com&source_cta=header" target="_blank">https://www.trustpilot.com/users/connect?redirect=%2freview%2flevis.com&source_cta=header</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/users/connect.html" target="_blank">trustpilot-scrape-results/trustpilot/users/connect.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/blog?utm_medium=consumer&utm_source=blog_header&utm_campaign=consumer_cta" target="_blank">https://www.trustpilot.com/blog?utm_medium=consumer&utm_source=blog_header&utm_campaign=consumer_cta</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/blog.html" target="_blank">trustpilot-scrape-results/trustpilot/blog.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/categories" target="_blank">https://www.trustpilot.com/categories</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/categories.html" target="_blank">trustpilot-scrape-results/trustpilot/categories.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/review/www.nike.com" target="_blank">https://www.trustpilot.com/review/www.nike.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/www.nike.html" target="_blank">trustpilot-scrape-results/trustpilot/review/www.nike.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/review/nudiejeans.com" target="_blank">https://www.trustpilot.com/review/nudiejeans.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/nudiejeans.html" target="_blank">trustpilot-scrape-results/trustpilot/review/nudiejeans.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/review/www.eu.levi.com" target="_blank">https://www.trustpilot.com/review/www.eu.levi.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/www.eu.levi.html" target="_blank">trustpilot-scrape-results/trustpilot/review/www.eu.levi.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://cdn.cookielaw.org/scripttemplates/6.28.0/otBannerSdk.js" target="_blank">https://cdn.cookielaw.org/scripttemplates/6.28.0/otBannerSdk.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/cookielaw/scripttemplates/6.28.0/otBannerSdk.js" target="_blank">trustpilot-scrape-results/cookielaw/scripttemplates/6.28.0/otBannerSdk.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://www.trustpilot.com/" target="_blank">https://www.trustpilot.com/</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/trustpilot.html" target="_blank">trustpilot-scrape-results/trustpilot/trustpilot.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/businessunitprofile-consumersite-2.804.0/_ssgManifest.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/businessunitprofile-consumersite-2.804.0/_ssgManifest.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/businessunitprofile-consumersite-2.804.0/_ssgManifest.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/businessunitprofile-consumersite-2.804.0/_ssgManifest.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/businessunitprofile-consumersite-2.804.0/_buildManifest.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/businessunitprofile-consumersite-2.804.0/_buildManifest.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/businessunitprofile-consumersite-2.804.0/_buildManifest.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/businessunitprofile-consumersite-2.804.0/_buildManifest.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/pages/review/%5BbusinessUnit%5D-fa589eed1b7b9494.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/pages/review/%5BbusinessUnit%5D-fa589eed1b7b9494.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/pages/review/%5BbusinessUnit%5D-fa589eed1b7b9494.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/pages/review/%5BbusinessUnit%5D-fa589eed1b7b9494.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/3125-8ddf8c5c163e7aac.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/3125-8ddf8c5c163e7aac.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/3125-8ddf8c5c163e7aac.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/3125-8ddf8c5c163e7aac.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/7238-fdd507ba7df4d1e0.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/7238-fdd507ba7df4d1e0.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/7238-fdd507ba7df4d1e0.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/7238-fdd507ba7df4d1e0.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/9534-64399b06a3585c66.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/9534-64399b06a3585c66.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/9534-64399b06a3585c66.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/9534-64399b06a3585c66.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/6567-bf32287d4e1520d7.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/6567-bf32287d4e1520d7.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/6567-bf32287d4e1520d7.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/6567-bf32287d4e1520d7.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/9652-123b9824f3f05c90.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/9652-123b9824f3f05c90.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/9652-123b9824f3f05c90.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/9652-123b9824f3f05c90.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/7065-f8846217cc7785df.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/7065-f8846217cc7785df.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/7065-f8846217cc7785df.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/7065-f8846217cc7785df.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/6609-73d006ee206b9df9.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/6609-73d006ee206b9df9.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/6609-73d006ee206b9df9.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/6609-73d006ee206b9df9.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/1741-5e8dbbfd2c1dde48.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/1741-5e8dbbfd2c1dde48.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/1741-5e8dbbfd2c1dde48.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/1741-5e8dbbfd2c1dde48.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/3200-54302ab99efbb4d3.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/3200-54302ab99efbb4d3.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/3200-54302ab99efbb4d3.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/3200-54302ab99efbb4d3.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/2666-6d747a04f5f42d77.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/2666-6d747a04f5f42d77.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/2666-6d747a04f5f42d77.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/2666-6d747a04f5f42d77.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/7825-09806b902be5c131.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/7825-09806b902be5c131.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/7825-09806b902be5c131.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/7825-09806b902be5c131.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/4257-311801d27ab41b14.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/4257-311801d27ab41b14.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/4257-311801d27ab41b14.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/4257-311801d27ab41b14.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/8182-771234f1fa6ac888.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/8182-771234f1fa6ac888.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/8182-771234f1fa6ac888.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/8182-771234f1fa6ac888.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/1317-d20befad58ffc203.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/1317-d20befad58ffc203.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/1317-d20befad58ffc203.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/1317-d20befad58ffc203.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/5675-5850db976dfff3a7.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/5675-5850db976dfff3a7.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/5675-5850db976dfff3a7.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/5675-5850db976dfff3a7.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/1725-6f37830e279397c8.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/1725-6f37830e279397c8.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/1725-6f37830e279397c8.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/1725-6f37830e279397c8.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/3877-3c378be7c3430f99.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/3877-3c378be7c3430f99.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/3877-3c378be7c3430f99.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/3877-3c378be7c3430f99.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/pages/_app-fbc490082d1ee42b.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/pages/_app-fbc490082d1ee42b.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/pages/_app-fbc490082d1ee42b.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/pages/_app-fbc490082d1ee42b.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/main-c3faee9f34a07c39.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/main-c3faee9f34a07c39.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/main-c3faee9f34a07c39.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/main-c3faee9f34a07c39.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/framework-2b8632a26ab8c75f.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/framework-2b8632a26ab8c75f.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/framework-2b8632a26ab8c75f.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/framework-2b8632a26ab8c75f.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/webpack-74360928f6164c3c.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/webpack-74360928f6164c3c.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/webpack-74360928f6164c3c.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/webpack-74360928f6164c3c.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js" target="_blank">https://businessunitprofile-cdn.trustpilot.net/businessunitprofile-consumersite/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js" target="_blank">trustpilot-scrape-results/trustpilot/businessunitprofile-consumersite/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://se.trustpilot.com/review/levis.com" target="_blank">https://se.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://pt.trustpilot.com/review/levis.com" target="_blank">https://pt.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://br.trustpilot.com/review/levis.com" target="_blank">https://br.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://pl.trustpilot.com/review/levis.com" target="_blank">https://pl.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://nl.trustpilot.com/review/levis.com" target="_blank">https://nl.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://nl-be.trustpilot.com/review/levis.com" target="_blank">https://nl-be.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://it.trustpilot.com/review/levis.com" target="_blank">https://it.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://fr.trustpilot.com/review/levis.com" target="_blank">https://fr.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://fr-be.trustpilot.com/review/levis.com" target="_blank">https://fr-be.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://es.trustpilot.com/review/levis.com" target="_blank">https://es.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://nz.trustpilot.com/review/levis.com" target="_blank">https://nz.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://ie.trustpilot.com/review/levis.com" target="_blank">https://ie.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+        <li>
+            URL: <a href="https://uk.trustpilot.com/review/levis.com" target="_blank">https://uk.trustpilot.com/review/levis.com</a><br>
+            Saved at: <a href="trustpilot-scrape-results/trustpilot/review/levis.html" target="_blank">trustpilot-scrape-results/trustpilot/review/levis.html</a>
+        </li>
+        
+    </ol>
+    
+</body>
+</html>
